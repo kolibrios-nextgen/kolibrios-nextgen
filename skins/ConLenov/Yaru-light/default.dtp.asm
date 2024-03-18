@@ -4,7 +4,7 @@ struc system_colors
 .grab             dd 0x323030
 .work_dark        dd 0xA5A5A5
 .work_light       dd 0xE4E4E4
-.title_text       dd 0xFFFFFF
+.title_text       dd 0x3D3D3D
 .work             dd 0xF8F8F8
 .work_button      dd 0xFFFFFF
 .work_button_text dd 0x3D3D3D
