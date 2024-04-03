@@ -1511,7 +1511,7 @@ draw_num_text:
 ;-----------------------------------------------------------------------------
 align 4
 sys_setup:
-;  1 = roland mpu midi base , base io address
+;  1 = not used
 ;  2 = keyboard   1, base kaybap 2, shift keymap, 9 country 1eng 2fi 3ger 4rus
 ;  3 = not used
 ;  4 = not used
@@ -1598,7 +1598,7 @@ sys_setup:
 ;-----------------------------------------------------------------------------
 align 4
 sys_getsetup:
-;  1 = roland mpu midi base , base io address
+;  1 = not used
 ;  2 = keyboard   1, base kaybap 2, shift keymap, 9 country 1eng 2fi 3ger 4rus
 ;  3 = not used
 ;  4 = not used
