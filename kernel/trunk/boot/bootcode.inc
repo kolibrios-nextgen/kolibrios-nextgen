@@ -416,7 +416,7 @@ sayerr:
         test    al, 2
         loopnz  @b
 
-        mov     al, 0xf6        ; Сброс клавиатуры, разрешить сканирование
+        mov     al, 0xf6        ; Keyboard reset, enable scanning
         out     0x60, al
         xor     cx, cx
 @@:
@@ -877,7 +877,7 @@ end if
         xor     dx, dx
         div     bx
 if lang eq ru
-; подождите 5 секунд, 4/3/2 секунды, 1 секунду
+; подождите 5 секунд, 4/3/2 секундЫ, 1 секундУ
         cmp     al, 5
         mov     cl, ' '
         jae     @f
@@ -894,7 +894,7 @@ else if lang eq et
         mov     byte [time_str+10], ' '
 @@:
 else if lang eq sp
-; esperar 5/4/3/2 segundos, 1 segundo
+; esperar 5/4/3/2 segundoS, 1 segundo
         cmp     al, 1
         mov     cl, 's'
         ja      @f
@@ -902,7 +902,7 @@ else if lang eq sp
 @@:
         mov     [time_str+10], cl
 else
-; wait 5/4/3/2 seconds, 1 second
+; wait 5/4/3/2 secondS, 1 second
         cmp     al, 1
         mov     cl, 's'
         ja      @f
@@ -1075,7 +1075,7 @@ include '../detect/biosmem.inc'
 
 ; TODO: !!!! read only first sector and set variables !!!!!
 ; ...
-; TODO: !!! then read flippy image track by track
+; TODO: !!! then read floppy image track by track
 
         mov     cx, 0x0001      ; startcyl,startsector
 .a1:

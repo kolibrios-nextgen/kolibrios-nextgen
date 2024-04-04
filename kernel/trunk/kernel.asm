@@ -2665,8 +2665,8 @@ sys_sheduler:
 ;now counter in ecx
 ;(edx:eax) esi:edi => edx:esi
         ; Fast Call MSR can't be destroy
-        ; Но MSR_AMD_EFER можно изменять, т.к. в этом регистре лиш
-        ; включаются/выключаются расширенные возможности
+        ; But MSR_AMD_EFER can be changed, because in this register only
+        ; advanced features are enabled/disabled
         cmp     edx, MSR_SYSENTER_CS
         je      @f
         cmp     edx, MSR_SYSENTER_ESP

@@ -171,7 +171,7 @@ v86_get_lin_addr:
 ;     esi=handle
 ; out: eax=V86 address, para-aligned (0x10 multiple)
 ; destroys: nothing
-; недописана!!!
+; unfinished!!!
 ;v86_alloc:
 ;        push    ebx ecx edx edi
 ;        lea     ebx, [esi+V86_machine.mutex]
