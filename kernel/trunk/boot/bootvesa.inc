@@ -78,13 +78,13 @@ virtual at $A000
   mi VBE_ModeInfo
 modes_table:
 end virtual
-cursor_pos  dw 0         ;временное хранение курсора.
+cursor_pos  dw 0         ; temporary cursor storage
 cursor_pos_old  dw 0
-home_cursor dw 0    ;current shows rows a table
-end_cursor  dw 0     ;end of position current shows rows a table
-scroll_start dw 0    ;start position of scroll bar
-scroll_end  dw 0     ;end position of scroll bar
-long_v_table = 9   ;long of visible video table
+home_cursor dw 0         ; current shows rows a table
+end_cursor  dw 0         ; end of position current shows rows a table
+scroll_start dw 0        ; start position of scroll bar
+scroll_end  dw 0         ; end position of scroll bar
+long_v_table = 9         ; long of visible video table
 size_of_step = 10
 scroll_area_size = long_v_table - 2
 int2str:
