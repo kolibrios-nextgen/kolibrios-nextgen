@@ -712,8 +712,8 @@ endg
 ; This function is called in boot process.
 ; It creates filesystems /fd and/or /fd2, if the system has one/two floppy drives.
 proc floppy_init
-
-; file fd_dev.inc
+;      search for FDDs and add them to the list of disks
+;      author - Mario79
         mov     al, 0x10
         out     0x70, al
         mov     cx, 0xff
@@ -732,12 +732,12 @@ proc floppy_init
 
         mov     ecx, floppy_mutex
         call    mutex_init
-; First floppy is present if [DRIVE_DATA] and 0xF0 is nonzero.
+; First floppy is present if [esp] and 0xF0 is nonzero.
         test    byte [esp], 0xF0
         jz      .no1
         stdcall disk_add, floppy_functions, floppy1_name, 1, DISK_NO_INSERT_NOTIFICATION
 .no1:
-; Second floppy is present if [DRIVE_DATA] and 0x0F is nonzero.
+; Second floppy is present if [esp] and 0x0F is nonzero.
         test    byte [esp], 0x0F
         jz      .no2
         stdcall disk_add, floppy_functions, floppy2_name, 2, DISK_NO_INSERT_NOTIFICATION

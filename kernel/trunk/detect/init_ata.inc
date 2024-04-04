@@ -8,6 +8,13 @@
 $Revision$
 
 
+;      clear the DRIVE_DATA table
+;      author - Mario79
+        xor     eax, eax
+        mov     edi, DRIVE_DATA
+        mov     ecx, DRIVE_DATA_SIZE/4
+        cld
+        rep stosd
 ;-----------------------------------------------------------------------------
 ; find the IDE controller in the device list
 ;-----------------------------------------------------------------------------

@@ -870,80 +870,6 @@ Remarks:
   eax - SF_SYSTEM (18)
   ebx - SSF_MINIMIZE_WINDOW (10)
 ======================================================================
- Function 18, subfunction 11 - get information on the disk subsystem.
-======================================================================
-
-!!! WARNING. This interface is outdated and should not be used !!!
-
-Parameters:
-  * eax = 18 - function number
-  * ebx = 11 - subfunction number
-  * ecx = type of the table:
-    * 1 = short version, 16 bytes
-  * edx = pointer to the buffer (in the application) for the table
-Returned value:
-  * function does not return value
-Format of the table: short version:
-  * +0: byte: information about FDD's (drives for floppies),
-    AAAABBBB, where AAAA gives type of the first drive, BBBB -
-    of the second regarding to the following list:
-    * 0 = there is no drive
-    * 1 = 360Kb, 5.25''
-    * 2 = 1.2Mb, 5.25''
-    * 3 = 720Kb, 3.5''
-    * 4 = 1.44Mb, 3.5''
-    * 5 = 2.88Mb, 3.5'' (such drives are not used anymore)
-    For example, for the standard configuration from one 1.44-drive
-    here will be 40h, and for the case 1.2Mb on A: and 1.44Mb on B:
-    the value is 24h.
-
-  First IDE controller:
-  * +1: byte: information about hard disks and CD-drives, AABBCCDD,
-    where AA corresponds to the controller IDE0, ..., DD - IDE3:
-    * 0 = device not found
-    * 1 = hard drive
-    * 2 = CD-drive
-    For example, in the case HD on IDE0 and CD on IDE2
-    this field contains 48h.
-  * +2: 4 db: number of the retrieved partitions on hard disks
-    at accordingly IDE0,...,IDE3.
-
-  Second IDE controller:
-  * +6: byte: information about hard disks and CD-drives, AABBCCDD,
-    where AA corresponds to the controller IDE4, ..., DD - IDE7:
-    * 0 = device not found
-    * 1 = hard drive
-    * 2 = CD-drive
-    For example, in the case HD on IDE4 and CD on IDE6
-    this field contains 48h.
-  * +7: 4 db: number of the retrieved partitions on hard disks
-    at accordingly IDE4,...,IDE7.
-
-  Third IDE controller:
-  * +11: byte: information about hard disks and CD-drives, AABBCCDD,
-    where AA corresponds to the controller IDE8, ..., DD - IDE11:
-    * 0 = device not found
-    * 1 = hard drive
-    * 2 = CD-drive
-    For example, in the case HD on IDE8 and CD on IDE10
-    this field contains 48h.
-  * +12: 4 db: number of the retrieved partitions on hard disks
-    at accordingly IDE8,...,IDE11.
-
-    If the hard disk on IDEx is absent, appropriate byte is zero,
-    otherwise it shows number of the recognized partitions, which
-    can be not presented (if the drive is not formatted or if
-    the file system is not supported). Current version of the kernel
-    supports only FAT12/16/32, NTFS, ext2/3/4 and XFS for hard disks.
-
-Remarks:
-  * The table can be used for obtaining the information about
-    available devices.
-
----------------------- Constants for registers: ----------------------
-  eax - SF_SYSTEM (18)
-  ebx - SSF_INFO_DISC_SYS (11)
-======================================================================
 ========== Function 18, subfunction 13 - get kernel version. =========
 ======================================================================
 Parameters:
@@ -1277,53 +1203,6 @@ Constant position of the window relative to other windows:
   ebx - SSF_WINDOW_BEHAVIOR (25)
   ecx - SSSF_GET_WB (1), SSSF_SET_WB (2)
 ======================================================================
-==================== Function 20 - MIDI interface. ===================
-======================================================================
-
-!!! WARNING. This interface is outdated and should not be used !!!
-
------------------------ Subfunction 1 - reset ------------------------
-Parameters:
-  * eax = 20 - function number
-  * ebx = 1 - subfunction number
-
--------------------- Subfunction 2 - output byte ---------------------
-Parameters:
-  * eax = 20 - function number
-  * ebx = 2 - subfunction number
-  * cl = byte for output
-Returned value (is the same for both subfunctions):
-  * eax = 0 - success
-  * eax = 1 - base port is not defined
-Remarks:
-  * Previously the base port must be defined by
-    subfunction 1 of function 21.
-
----------------------- Constants for registers: ----------------------
-  eax - SF_MIDI (20)
-  ebx - SSF_RESET (1), SSF_OUTPUT (2)
-======================================================================
-======== Function 21, subfunction 1 - set MPU MIDI base port. ========
-======================================================================
-
-!!! WARNING. This interface is outdated and should not be used !!!
-
-Parameters:
-  * eax = 21 - function number
-  * ebx = 1 - subfunction number
-  * ecx = number of base port
-Returned value
-  * eax = 0 - success
-  * eax = -1 - erratic number of a port
-Remarks:
-  * Number of a port must satisfy to conditions 0x100<=ecx<=0xFFFF.
-  * The installation of base is necessary for function 20.
-  * To get base port use subfunction 1 of function 26.
-
----------------------- Constants for registers: ----------------------
-  eax - SF_SYSTEM_SET (21)
-  ebx - SSF_MPU_MIDI_BASE (1)
-======================================================================
 ========== Function 21, subfunction 2 - set keyboard layout. =========
 ======================================================================
 Keyboard layout is used to convert keyboard scancodes to ASCII-codes,
@@ -1550,23 +1429,6 @@ Remarks:
 
 ---------------------- Constants for registers: ----------------------
   eax - SF_SCREEN_PUT_IMAGE (25)
-======================================================================
-======== Function 26, subfunction 1 - get MPU MIDI base port. ========
-======================================================================
-
-!!! WARNING. This interface is outdated and should not be used !!!
-
-Parameters:
-  * eax = 26 - function number
-  * ebx = 1 - subfunction number
-Returned value:
-  * eax = port number
-Parameters:
-  * To set base port use subfunction 1 of function 21.
-
----------------------- Constants for registers: ----------------------
-  eax - SF_SYSTEM_GET (26)
-  ebx - SSF_MPU_MIDI_BASE (1)
 ======================================================================
 ========== Function 26, subfunction 2 - get keyboard layout. =========
 ======================================================================
