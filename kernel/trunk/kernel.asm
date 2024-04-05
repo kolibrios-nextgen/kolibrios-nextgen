@@ -1037,6 +1037,7 @@ ap_init_high:
 include 'unpacker.inc'
 
 align 4
+; IN: esi -> asciiz string
 boot_log:
         pushad
 

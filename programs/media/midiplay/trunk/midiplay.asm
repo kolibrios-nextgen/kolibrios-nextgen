@@ -7,99 +7,106 @@ include 'lang.inc'
 include '..\..\..\macros.inc'
 
 use32
- org	0x0
- db	'MENUET01'    ; header
- dd	0x01	      ; header version
- dd	START	      ; entry point
- dd	I_END	      ; image size
- dd	0x1000        ; required memory
- dd	0x1000        ; esp
- dd	0x0 , 0x0     ; I_Param , I_Path
+ org    0x0
+ db     'MENUET01'    ; header
+ dd     0x01          ; header version
+ dd     START         ; entry point
+ dd     I_END         ; image size
+ dd     0x1000        ; required memory
+ dd     0x1000        ; esp
+ dd     0x0 , 0x0     ; I_Param , I_Path
+
+
+MIDI_PORT = 0x330
+
+midisp: dw      MIDI_PORT + 1
+mididp: dw      MIDI_PORT
 
 
 START:
+        mov     dx, word[midisp]
+        mov     cx, word[mididp]
+        mcall   46, 0
+
 
   red:
     call  draw_window
 
 still:
 
-    mov       eax,10                 ; redraw ?
-    mcall
+        mov     eax,10          ; redraw ?
+        mcall
 
-    cmp    eax,1
-    jz     red
-    cmp    eax,3
-    jz     button
-    jmp    still
+        cmp     eax, 1
+        jz      red
+        cmp     eax, 3
+        jnz     still
 
-  button:
-    mov  eax,17
-    mcall
+        ;button:
+        mov  eax,17
+        mcall
 
-    cmp  al,byte 0
-    jnz  still
+        cmp  al,byte 0
+        jnz  still
 
-    cmp  ah,1
-    jnz  noexit
+        cmp  ah,1
+        jz   exit
 
-    mov  eax,0xffffffff
-    mcall
+        cmp  ah,2
+        jz   .play_note
 
-  noexit:
+        ; reset midi device
+        call    midi_reset
 
-    cmp  ah,2
-    jz   note1
+        cmp  eax,0    ; check error code
+        jz   still
 
-    mov  eax,20   ; reset midi device
-    mov  ebx,1
-    mov  ecx,0
-    mcall
+        call printerror
 
-    cmp  eax,0
-    jz   noe1
+        jmp  still
 
-    call printerror
+.play_note:
 
-  noe1:
+        mov  eax,50
 
-    jmp  still
+  .nn:
 
-  note1:
+        mov     ebx, 100
+        call    noteout
+        pusha
 
-    mov  eax,50
+        mov     eax, 5
+        mov     ebx, 8
+        mcall
 
-  nn:
-
-    mov  ebx,100
-    call noteout
-    pusha
-    mov  eax,5
-    mov  ebx,8
-    mcall
-    popa
-    mov  ebx,0
+        popa
+        mov     ebx, 0
 ;    call noteout
 
-    add  eax,3
+        add     eax, 3
 
-    mov  ebx,100
-    call noteout
-    pusha
-    mov  eax,5
-    mov  ebx,8
-    mcall
-    popa
-    mov  ebx,0
+        mov     ebx, 100
+        call    noteout
+        pusha
+
+        mov     eax, 5
+        mov     ebx, 8
+        mcall
+
+        popa
+        mov     ebx, 0
 ;    call noteout
 
-    add  eax,4
+        add     eax, 4
 
-    inc  eax
-    cmp  eax,90
-    jbe  nn
+        inc     eax
+        cmp     eax, 90
+        jbe     .nn
 
-    jmp  still
+        jmp     still
+
+exit:
+        mcall   -1
 
 
 draw_window:
@@ -149,52 +156,120 @@ draw_window:
 
 
 noteout:
+        pusha
 
-    pusha
+        push ebx
+        push eax
 
-    push ebx
-    push eax
+        mov     ecx, 0x9f
+        call    midi_output_byte
 
-    mov  eax,20
-    mov  ebx,2
-    mov  ecx,0x9f
-    mcall
-    mov  eax,20
-    mov  ebx,2
-    pop  ecx
-    mcall
-    mov  eax,20
-    mov  ebx,2
-    pop  ecx
-    mcall
+        pop     ecx
+        call    midi_output_byte
 
-    cmp  eax,0
-    jz   noe2
+        pop     ecx
+        call    midi_output_byte
 
-    call printerror
+        cmp     eax, 0
+        jz      @f
 
-  noe2:
+        call    printerror
 
-    popa
-    ret
+@@:
+        popa
+        ret
 
 printerror:
 
-    mov       eax,dword 4
-    mov       ebx,15*65536+85
-     mov       ecx,0x000000
-     mov       edx,error1
-    mov       esi,errorlen1-error1
-    mcall
+        mov     eax, 4
+        mov     ebx, 15*65536+85
+        mov     ecx, 0x000000
+        mov     edx, error1
+        mov     esi, errorlen1-error1
+        mcall
 
-    mov       eax,dword 4
-    mov       ebx,15*65536+95
-     mov       ecx,0x000000
-     mov       edx,error2
-    mov       esi,errorlen2-error2
-    mcall
+        mov     eax, 4
+        mov     ebx, 15*65536+95
+        mov     ecx, 0x000000
+        mov     edx, error2
+        mov     esi, errorlen2-error2
+        mcall
 
-    ret
+        ret
+
+; KERNEL CODE
+
+midi_reset:
+@@:
+        ; reset device
+        call    is_output
+        test    al, al
+        jnz     @b
+        mov     dx, word [midisp]
+        mov     al, 0xff
+        out     dx, al
+@@:
+        mov     dx, word [midisp]
+        mov     al, 0xff
+        out     dx, al
+        call    is_input
+        test    al, al
+        jnz     @b
+        call    get_mpu_in
+        cmp     al, 0xfe
+        jnz     @b
+@@:
+        call    is_output
+        test    al, al
+        jnz     @b
+        mov     dx, word [midisp]
+        mov     al, 0x3f
+        out     dx, al
+        ret
+
+midi_output_byte:
+        ; output byte
+@@:
+        call    get_mpu_in
+        call    is_output
+        test    al, al
+        jnz     @b
+        mov     al, cl
+        call    put_mpu_out
+        ret
+
+is_input:
+        push    edx
+        mov     dx, word [midisp]
+        in      al, dx
+        and     al, 0x80
+        pop     edx
+        ret
+
+is_output:
+        push    edx
+        mov     dx, word [midisp]
+        in      al, dx
+        and     al, 0x40
+        pop     edx
+        ret
+
+get_mpu_in:
+        push    edx
+        mov     dx, word [mididp]
+        in      al, dx
+        pop     edx
+        ret
+
+put_mpu_out:
+        push    edx
+        mov     dx, word [mididp]
+        out     dx, al
+        pop     edx
+        ret
+
+
+
 
 
 ; DATA AREA
