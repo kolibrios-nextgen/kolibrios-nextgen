@@ -86,6 +86,8 @@ jobs:
           echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"'                                  >> tup.config
           echo "CONFIG_KERPACK_CMD=&& kerpack %o"                                         >> tup.config
           echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm $ROOT/data/common/pestrip.asm %o"   >> tup.config
+          echo "CONFIG_VERSION_GEN_CMD=$ROOT/kernel/trunk/version-gen.sh"                 >> tup.config
+          echo "CONFIG_INSERT_REVISION_ID=1"                                              >> tup.config
           echo "CONFIG_BUILD_TYPE=eng"                                                    >> tup.config
 
           rm ${{ github.workspace }}/programs/develop/libraries/kos_mbedtls/library/Tupfile.lua
@@ -126,6 +128,8 @@ jobs:
           echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"'                                  >> tup.config
           echo "CONFIG_KERPACK_CMD=&& kerpack %o"                                         >> tup.config
           echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm $ROOT/data/common/pestrip.asm %o"   >> tup.config
+          echo "CONFIG_VERSION_GEN_CMD=$ROOT/kernel/trunk/version-gen.sh"                 >> tup.config
+          echo "CONFIG_INSERT_REVISION_ID=1"                                              >> tup.config
           echo "CONFIG_BUILD_TYPE=rus"                                                    >> tup.config
 
           tup
