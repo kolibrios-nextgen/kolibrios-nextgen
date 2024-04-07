@@ -6,19 +6,19 @@ void get_str_meminfo(char *str) {
 }
 
 int cmd_kfetch(char param[]) {
-	char *str_krnl_ver = malloc(64);
-	get_str_kernel_version(str_krnl_ver, "%d.%d.%d.%d. SVN-rev.: %d");
-	char *str_uptime = malloc(64);
-	get_str_uptime(str_uptime, "%d day(s), %d:%d:%d.%d");
-	char *str_resolution = malloc(24);
-	ksys_pos_t resol = _ksys_screen_size();
-	sprintf(str_resolution, "%u x %u", resol.x + 1, resol.y + 1);
-	char *str_cpu_info = malloc(16);
-	get_str_cpu_info(str_cpu_info);
-    char *str_meminfo = malloc(24);
+    char str_krnl_ver[64];
+    get_str_kernel_version(str_krnl_ver, "v%d.%d-%d-g%s");
+    char str_uptime[64];
+    get_str_uptime(str_uptime, "%d day(s), %d:%d:%d.%d");
+    char str_resolution[24];
+    ksys_pos_t resol = _ksys_screen_size();
+    sprintf(str_resolution, "%u x %u", resol.x + 1, resol.y + 1);
+    char str_cpu_info[16];
+    get_str_cpu_info(str_cpu_info);
+    char str_meminfo[24];
     get_str_meminfo(str_meminfo);
-	
-	printf(/*"\033[0;34;40m                                        \033[0m\n\r"*/
+
+    printf(/*"\033[0;34;40m                                        \033[0m\n\r"*/
 /*"\033[0;34;40m                                        \033[0m\n\r"*/
 /*"\033[0;34;40m                                        \033[0m\n\r"*/
 "\033[0;34;40m                                .\033[0;31;40m    \033[0;34;40m   \033[0m\n\r"
@@ -42,12 +42,7 @@ int cmd_kfetch(char param[]) {
 "\033[0;34;40m                 \033[0;31;40m  \033[0;34;40m \033[0;31;40m.\033[0;1;30;40m8\033[0;5;37;45m@\033[0;5;35;44m:\033[0;1;30;45m8\033[0;5;34;44m \033[0;5;35;45m \033[0;1;34;44m8\033[0;1;35;45m.\033[0;5;34;40mX\033[0;34;40m@\033[0;32;40mS\033[0;31;40m     \033[0;34;40m   \033[0m\n\r"
 "\033[0;34;40m                 \033[0;31;40m \033[0;34;40m  \033[0;31;40m \033[0;34;40m.;\033[0;1;30;40m8\033[0;1;30;44m8\033[0;34;40m8\033[0;5;34;40m8\033[0;32;40m%%\033[0;34;40m8;\033[0;32;40m;\033[0;31;40m.\033[0;32;40m \033[0;31;40m    \033[0;34;40m   \033[0m\n\r"
 "\033[0;34;40m                   \033[0;31;40m \033[0;34;40m \033[0;32;40m .\033[0;31;40m .:\033[0;32;40m.\033[0;31;40m.\033[0;32;40m.\033[0;31;40m.\033[0;32;40m.\033[0;31;40m     \033[0;32;40m \033[0;34;40m   \033[0m\n\r",
- "\033[0;36mOS\033[0m: KolibriOS", "\033[0;36mKernel\033[0m: ", str_krnl_ver, "\033[0;36mUptime\033[0m: ", str_uptime, "\033[0;36mResolution\033[0m: ", str_resolution, "\033[0;36mCPU\033[0m: ", str_cpu_info, "\033[0;36mMemory\033[0m: ", str_meminfo);
+ "\033[0;36mOS\033[0m: KolibriOS-NG", "\033[0;36mVersion\033[0m: ", str_krnl_ver, "\033[0;36mUptime\033[0m: ", str_uptime, "\033[0;36mResolution\033[0m: ", str_resolution, "\033[0;36mCPU\033[0m: ", str_cpu_info, "\033[0;36mMemory\033[0m: ", str_meminfo);
 
-	free(str_krnl_ver);
-	free(str_uptime);
-	free(str_resolution);
-	free(str_cpu_info);
-    free(str_meminfo);
     return TRUE;
 }
