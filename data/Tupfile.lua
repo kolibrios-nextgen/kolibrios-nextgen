@@ -872,8 +872,8 @@ for i,v in ipairs(img_files) do
     -- note that .revision and .kernel.mnt must begin with .
     -- to prevent tup from tracking them
     if build_type == "rus"
-    then str='$(LANG=ru_RU.utf8 date -u +"[автосборка %d %b %Y %R, r$(get-current-revision)]"|iconv -f utf8 -t cp866)'
-    else str='$(date -u +"[auto-build %d %b %Y %R, r$(get-current-revision)]")'
+    then str='$(LANG=ru_RU.utf8 date -u +"[автосборка %d %b %Y %R, g$(git rev-parse --short HEAD)]"|iconv -f utf8 -t cp866)'
+    else str='$(date -u +"[autobuild %d %b %Y %R, g$(git rev-parse --short HEAD)]")'
     end
     str = string.gsub(str, "%$", "\\$") -- escape $ as \$
     str = string.gsub(str, "%%", "%%%%") -- escape % as %%
@@ -899,7 +899,7 @@ end
 
 -- generate tup rule for kolibri.iso
 if tup.getconfig("INSERT_REVISION_ID") ~= ""
-then volume_id = "KolibriOS r`get-current-revision`"
+then volume_id = "KolibriOS g`git rev-parse --short HEAD`"
 else volume_id = "KolibriOS"
 end
 tup.definerule{inputs = input_deps, command =
