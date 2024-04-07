@@ -1,19 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-__REV = 0
-
-macro $Revision a {
-  match =: Num =$,a \{
-    if __REV < Num
-      __REV = Num
-    end if
-  \}
-}
 
 macro ignore_empty_revision_keyword {
   ; svn keywords are neither substituted by git-svn nor catched by $Revision

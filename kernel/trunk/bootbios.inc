@@ -23,8 +23,8 @@ use16
 org 0
         ; struct kernel_header
         jmp     start_of_code   ; jump
-        db      'KolibriOS '    ; signature
-        db      'v0.7.7.0+     ',13,10,13,10,0  ; version
+        db      'KolibriOS-NG ' ; signature
+        BOOT_VERSION_INFO       ; version
         dd      B32-KERNEL_BASE ; offset of the kernel's 32-bit entry point
 
 include "boot/bootstr.inc"      ; language-independent boot messages

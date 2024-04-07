@@ -1,11 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2021. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-SYSTEM FUNCTIONS of OS Kolibri 0.7.7.0
+SYSTEM FUNCTIONS of KolibriOS-NG
 
 Number of the function is located in the register eax.
 The call of the system function is executed by "int 0x40" command.
@@ -944,35 +945,30 @@ Remarks:
   eax - SF_SYSTEM (18)
   ebx - SSF_INFO_DISC_SYS (11)
 ======================================================================
-========== Function 18, subfunction 13 - get kernel version. =========
+========== Function 18, subfunction 13 - get OS version. =============
 ======================================================================
 Parameters:
   * eax = 18 - function number
   * ebx = 13 - subfunction number
-  * ecx = pointer to the buffer (not less than 16 bytes), where
+  * ecx = pointer to the buffer (not less than 14 bytes), where
     the information will be placed
 Returned value:
   * function does not return value
     but if pointer in ecx is illegal, for example,
-    [ecx, ecx + 9) region intersects with kernel memory,
+    [ecx, ecx + 14) region intersects with kernel memory,
     then function returns -1
-Remarks:
-  * At the moment only the part of the buffer by a size
-    9 bytes is used. Nevertheless it is recommended to use
-    16 byte buffer for the future compatibility, in the future
-    some fields can be added.
 Structure of the buffer:
-db a,b,c,d for version a.b.c.d
-db 0: reserved
-dd REV - kernel SVN revision number
-For Kolibri 0.7.7.0+ kernel:
-db 0,7,7,0
-db 0
-dd 1675
+db a, b - git-tag (a.b);
+dw offset - number of commits after git-tag;
+db 'hash', 0 - a null-terminated git-hash string.
+For example for KolibriOS-NG v1.0-14-g99ffedbae:
+db 1, 0
+dw 14
+db '99ffedbae', 0
 
 ---------------------- Constants for registers: ----------------------
   eax - SF_SYSTEM (18)
-  ebx - SSF_KERNEL_VERSION (13)
+  ebx - SSF_KERNEL_VERSION/SSF_OS_VERSION (13)
 ======================================================================
 ======= Function 18, subfunction 14 - wait for screen retrace. =======
 ======================================================================
