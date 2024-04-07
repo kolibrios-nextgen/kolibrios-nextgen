@@ -15,12 +15,12 @@ const command_t COMMANDS[]=
         {"free",    "  Показывает объём оперативной памяти: всей, свободной и используемой\n\r", &cmd_memory},
         {"help",    "  Справка по командам. Использование:\n\r    help ;список всех команд\n\r    help <команда> ;справка по команде\n\r", &cmd_help},
         {"history", "  Список использованных команд\n\r", &cmd_history},   
-		{"kfetch",  "  Печатает лого и информацию о системе.\n\r", &cmd_kfetch},    
+        {"kfetch",  "  Печатает лого и информацию о системе.\n\r", &cmd_kfetch},
         {"kill",    "  Убивает процесс. Использование:\n\r    kill <PID процесса>\n\r    kill all\n\r", &cmd_kill},
         {"pkill",   "  Убивает все процессы по имени. Использование:\n\r    pkill <имя_процесса>\n\r", &cmd_pkill},
         {"ls",      "  Выводит список файлов. Использование:\n\r    ls ;список файлов в текущем каталоге\n\r    ls <директория> ;список файлов из заданной директории\n\r", &cmd_ls},
         {"lsmod",	"  list working driver \n\r", &cmd_lsmod},
-		{"mkdir",   "  Создает каталог и родительские каталоги при необходимости. Использование:\n\r    mkdir <имя/папки>", &cmd_mkdir},
+        {"mkdir",   "  Создает каталог и родительские каталоги при необходимости. Использование:\n\r    mkdir <имя/папки>", &cmd_mkdir},
         {"more",    "  Выводит содержимое файла на экран. Использование:\n\r    more <имя файла>\n\r", &cmd_more},
         {"ps",      "  Выводит список процессов\n\r  Если указано <имяпроцесса>, показывает больше данных и сохраняет LASTPID\n\r", &cmd_ps},
         {"pwd",     "  Показывает имя текущей директории\n\r", &cmd_pwd},
@@ -59,7 +59,6 @@ const command_t COMMANDS[]=
 #define CMD_SLEEP_USAGE "  sleep <интервал в сотых доляx секунды>\n\r"
 #define CMD_TOUCH_USAGE "  touch <имя файла>\n\r"
 #define CMD_UPTIME_FMT "  Uptime: %d дней, %d:%d:%d.%d\n\r"
-#define CMD_VER_FMT1 "  KolibriOS v%d.%d.%d.%d. SVN-рев. ядра: %d\n\r"
 #define CMD_WAITFOR_FMT "  Ожидаем завершения PID %d\n\r"
 #define EXEC_STARTED_FMT "  '%s' запущен. PID = %d\n\r"
 #define EXEC_SCRIPT_ERROR_FMT "Ошибка в '%s' : скрипт должен начинаться со строчки #SHS\n\r"

@@ -2,6 +2,7 @@
 #define _KSYS_H_
 
 /* Copyright (C) KolibriOS team 2004-2021. All rights reserved. */
+/* Copyright (C) KolibriOS-NG team 2024. All rights reserved.   */
 /* Distributed under terms of the GNU General Public License    */
 
 /* This file contains basic wrappers over KolibriOS system calls. */
@@ -757,6 +758,27 @@ enum KSYS_SHD_PARAM {
 KOSAPI void _ksys_shutdown(uint32_t shd_param)
 {
     asm_inline("int $0x40" ::"a"(18), "b"(9), "c"(shd_param));
+}
+
+/*========= Function 18, subfunction 13 - get OS version. ========*/
+
+#define KSYS_VER_HASH_LEN 9
+
+typedef struct {
+    uint8_t a;
+    uint8_t b;
+    uint16_t offset;
+    char hash[KSYS_VER_HASH_LEN + 1];
+} ksys_os_ver_t;
+
+KOSAPI int _ksys_get_os_ver(ksys_os_ver_t *ver)
+{
+    int status;
+    asm_inline(
+        "int $0x40"
+        : "=a"(status)
+        : "a"(18), "b"(13), "c"(ver));
+    return status;
 }
 
 /*========= Function 18, subfunction 16 - get size of free RAM. ========*/
