@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 include "core/sync.inc"         ; macros for synhronization objects
 include "core/sys32.inc"        ; process management
 include "core/sched.inc"        ; process scheduling

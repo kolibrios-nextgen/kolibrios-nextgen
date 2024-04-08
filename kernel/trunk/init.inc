@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 align 4
 proc mem_test
 ; if we have BIOS with fn E820, skip the test

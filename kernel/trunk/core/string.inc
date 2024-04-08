@@ -5,9 +5,6 @@
 ;; Author: Kees J. Bot 1 Jan 1994                               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 ; size_t strncat(char *s1, const char *s2, size_t n)
 ; Append string s2 to s1.
 

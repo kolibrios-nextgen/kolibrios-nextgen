@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ; This crc32 routine doesn't use precomputed table to allow different
 ; polynomials, which is the first param.
 ; Partial hash in assumed to be eax (both in and out).

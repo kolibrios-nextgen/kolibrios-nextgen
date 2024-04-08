@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ; Memory management for slab structures.
 ; The allocator meets special requirements:
 ; * memory blocks are properly aligned

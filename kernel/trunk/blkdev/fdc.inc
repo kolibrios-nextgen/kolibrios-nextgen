@@ -5,9 +5,6 @@
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 uglobal
   dmasize         db 0x0
   dmamode         db 0x0

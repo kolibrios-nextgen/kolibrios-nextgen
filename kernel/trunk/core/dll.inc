@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 DRV_COMPAT   =  5  ;minimal required drivers version
 DRV_CURRENT  =  6  ;current drivers model version
 
