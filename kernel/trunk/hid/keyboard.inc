@@ -5,9 +5,6 @@
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 VKEY_LSHIFT   = 00000000_00000001b
 VKEY_RSHIFT   = 00000000_00000010b
 VKEY_LCONTROL = 00000000_00000100b

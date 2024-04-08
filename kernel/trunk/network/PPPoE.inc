@@ -14,9 +14,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 struct  PPPoE_frame
         VersionAndType  db ?
         Code            db ?

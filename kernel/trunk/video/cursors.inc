@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 LOAD_FROM_FILE  = 0
 LOAD_FROM_MEM   = 1
 LOAD_INDIRECT   = 2

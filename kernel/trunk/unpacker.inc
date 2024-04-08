@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 ; @brief Unpack LZMA-compressed data. C-style declaration of the function.
 ;
 ; ```void __stdcall unpack(void *packed_data, void *unpacked_data);```

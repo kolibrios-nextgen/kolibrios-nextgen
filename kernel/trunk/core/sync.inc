@@ -7,10 +7,6 @@
 ;; Author: Halyavin Andrey, halyavin@land.ru                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
-
 RWSEM_WAITING_FOR_WRITE = 0
 RWSEM_WAITING_FOR_READ  = 1
 

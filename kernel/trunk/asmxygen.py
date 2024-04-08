@@ -944,7 +944,7 @@ def get_declarations(asm_file_contents, asm_file_name):
                         r.step()
                     comment = r.comment
                     # Only handle non-local labels
-                    if name[0] != '.' and name != "@@" and name != "$Revision":
+                    if name[0] != '.' and name != "@@":
                         # Treate the label as function if there's @return or
                         # @param in its comment. Othervice it's just a variable
                         # with type `label` in generated doxygen C

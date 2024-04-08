@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 ; Éste archivo debe ser editado con codificación CP866
 
 ugui_mouse_speed cp850 'velocidad del ratón',0

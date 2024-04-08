@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 ; Support for USB (non-root) hubs:
 ; powering up/resetting/disabling ports,
 ; watching for adding/removing devices.

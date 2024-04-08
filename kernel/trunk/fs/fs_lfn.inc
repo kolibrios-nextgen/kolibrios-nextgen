@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ERROR_SUCCESS        = 0
 ERROR_DISK_BASE      = 1
 ERROR_UNSUPPORTED_FS = 2

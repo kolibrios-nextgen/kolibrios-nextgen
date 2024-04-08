@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 dpl0    =  10010000b      ; data read       dpl0
 drw0    =  10010010b      ; data read/write dpl0
 drw3    =  11110010b      ; data read/write dpl3

@@ -9,8 +9,6 @@
 ; 26/11/2013 yogev_ezra: Added CPU speed modifier and MMX support flag detection
 ; Thanks for help to: dunkaist, eAndrew, hidnplayr, Mario
 
-$Revision$
-
 VORTEX86DEBUG = 0                       ; For testing in emulators and in non-Vortex86 CPU computers, set this to 1
 VORTEX86DEBUGVALUE = 'DMP5'             ; FAKE port output = used for testing
 NORTH_BRIDGE = 0x80000000               ; Base address of Vortex86 PCI North Bridge

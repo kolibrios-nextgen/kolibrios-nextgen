@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 ; Functions for USB pipe manipulation: opening/closing, sending data etc.
 ;
 USB_STDCALL_VERIFY = 1

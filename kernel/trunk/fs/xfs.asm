@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 include 'xfs.inc'
 
 macro omit_frame_pointer_prologue procname,flag,parmbytes,localbytes,reglist {

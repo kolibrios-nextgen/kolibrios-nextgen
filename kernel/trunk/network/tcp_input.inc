@@ -14,8 +14,6 @@
 ;;                                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 TCP_BIT_NEEDOUTPUT      = 1 shl 0
 TCP_BIT_TIMESTAMP       = 1 shl 1
 TCP_BIT_DROPSOCKET      = 1 shl 2
