@@ -1,0 +1,29 @@
+FROM kolibriosnextgen-toolchain:latest AS builder
+WORKDIR /app
+COPY . .
+
+RUN \
+    echo 'exec /app/programs/cmm/c--/c--.elf $*' > /home/autobuild/tools/win32/bin/c-- && \
+    chmod +x /app/programs/cmm/c--/c--.elf && \
+    chmod +x /home/autobuild/tools/win32/bin/c-- && \
+    export PATH=/home/autobuild/tools/win32/bin:$PATH && \
+    export ROOT=/app && \
+    echo "CONFIG_LANG=en" >> tup.config && \
+    echo "CONFIG_NO_JWASM=full" >> tup.config && \
+    echo "CONFIG_NO_MSVC=full" >> tup.config && \
+    echo "CONFIG_TOOLCHAIN_LIBPATH=/home/autobuild/tools/win32/mingw32/lib" >> tup.config && \
+    echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"' >> tup.config && \
+    echo "CONFIG_KERPACK_CMD=&& kerpack %o" >> tup.config && \
+    echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm /app/data/common/pestrip.asm %o" >> tup.config && \
+    echo "CONFIG_VERSION_GEN_CMD=/app/kernel/trunk/version-gen.sh" >> tup.config && \
+    echo "CONFIG_INSERT_REVISION_ID=1" >> tup.config && \
+    echo "CONFIG_BUILD_TYPE=eng" >> tup.config && \
+    rm programs/develop/libraries/kos_mbedtls/library/Tupfile.lua && \
+    rm programs/develop/libraries/kos_mbedtls/programs/ssl/Tupfile.lua && \
+    cat tup.config && \
+    tup init && \
+    tup generate build-once.sh && \
+    ./build-once.sh
+
+FROM scratch AS export
+COPY --from=builder /app/data/kolibri.iso .
