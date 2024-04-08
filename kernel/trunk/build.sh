@@ -1,22 +1,66 @@
-#!/bin/sh
-# Compile the KolibriOS kernel on Linux
-# 2017, The KolibriOS team
+#!/bin/bash
 
-KERPACK=$HOME/kolibrios/programs/other/kpack/kerpack_linux/kerpack
-KOLIBRI_IMG=$HOME/nightly/kolibri.img
+# Copyright (C) KolibriOS-NG team 2024. All rights reserved
+# Distributed under terms of the GNU General Public License
 
-replace=0; # Replace kernel in the image file?
-echo 'lang fix en' > lang.inc
-fasm -m 65536 bootbios.asm bootbios.bin
-fasm -m 65536 kernel.asm kernel.mnt
-$KERPACK kernel.mnt kernel.mnt
+set -eu
 
-[[ $replace -eq 1 ]] && {
-    mntpt=$(mktemp -d)
+use_ver_gen=0
+use_kerpack=0
 
-    sudo mount -o loop $KOLIBRI_IMG $mntpt
-    sudo mount -o remount,rw $mntpt
-    sudo cp kernel.mnt ${mntpt}/KERNEL.MNT
-    sudo umount $mntpt
-    rmdir $mntpt
+lang="en"
+
+show_help()
+{
+cat << EOF
+Script for building the KolibriOS-NG kernel.
+Usage: $0 [option]...
+
+Arguments:
+  -v            use "git describe" for generate "ver.inc"
+  -l [lang]     use language, default "en"
+  -p            pack kernels using the "kerpack" utility
+  -c            clean build artifacts and exit
+  -h            show this help and exit
+
+Example:
+  $0 -l ru -vp
+
+EOF
 }
+
+while getopts "vl:pch" opt; do
+  case "${opt}" in
+    v) use_ver_gen=1 ;;
+    l) lang=${OPTARG} ;;
+    p) use_kerpack=1 ;;
+    c)
+      rm -f lang.inc ver.inc kernel.mnt kernel.mnt.ext_loader
+      exit 0
+      ;;
+    h)
+      show_help
+      exit 0
+      ;;
+    *)
+      echo "Bad arguments"
+      exit 1
+      ;;
+  esac
+done
+
+if [ $use_ver_gen -eq 1 ]; then
+  ./version-gen.sh > ver.inc
+else
+  cp -f ver_stub.inc ver.inc
+fi
+
+echo "lang fix $lang" > lang.inc
+
+fasm -m 262144 kernel.asm kernel.mnt
+fasm -m 262144 -dextended_primary_loader=1 kernel.asm kernel.mnt.ext_loader
+
+if [ $use_kerpack -eq 1 ]; then
+  kerpack kernel.mnt
+  kerpack kernel.mnt.ext_loader
+fi
