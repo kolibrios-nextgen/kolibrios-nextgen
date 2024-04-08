@@ -16,8 +16,6 @@
 ;;                                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ; ICMP types & codes
 
 ICMP_ECHOREPLY                  = 0             ; echo reply message

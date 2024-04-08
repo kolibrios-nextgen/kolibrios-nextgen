@@ -17,8 +17,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 uglobal
 align 4
         bgr_cur_line    rd MAX_SCREEN_WIDTH

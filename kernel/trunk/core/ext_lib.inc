@@ -8,8 +8,6 @@
 ; External kernel dependencies (libraries) loading.
 ; The code currently does not work, requires correcting dll.inc.
 
-$Revision$
-
 if 0
 iglobal
 tmp_file_name_size  dd  1

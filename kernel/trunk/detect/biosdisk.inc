@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 ; Detect all BIOS hard drives.
 ; diamond, 2008
 ; Do not include USB mass storages. CleverMouse, 2013

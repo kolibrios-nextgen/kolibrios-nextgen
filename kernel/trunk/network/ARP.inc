@@ -16,8 +16,6 @@
 ;;                                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ARP_NO_ENTRY            = 0
 ARP_VALID_MAPPING       = 1
 ARP_AWAITING_RESPONSE   = 2

@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ; file types from stat.h
 S_IFMT      = 0170000o  ; These bits determine file type
 S_IFDIR     = 0040000o  ; Directory

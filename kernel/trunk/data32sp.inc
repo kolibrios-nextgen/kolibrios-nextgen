@@ -5,9 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
   boot_initirq:     cp850   'Inicializar IRQ',0
   boot_picinit:     cp850   'Inicializar PIC',0
   boot_v86machine:  cp850   'Inicializar sistema V86',0

@@ -5,8 +5,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
 ; Initializes PAT (Page Attribute Table) and MTRRs.
 proc init_pat_mtrr
         cmp     [BOOT.mtrr], byte 2

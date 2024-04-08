@@ -14,9 +14,6 @@
 ;;                                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-$Revision$
-
-
 struct  IPv6_header
 
         VersionTrafficFlow      dd ?    ; Version[0-3], Traffic class[4-11], Flow Label [12-31]
