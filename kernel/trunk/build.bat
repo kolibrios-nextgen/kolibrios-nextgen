@@ -1,3 +1,7 @@
+:: Copyright (C) KolibriOS team 2018. All rights reserved
+:: Copyright (C) KolibriOS-NG team 2024. All rights reserved
+:: Distributed under terms of the GNU General Public License
+
 @echo off
 cls
 
@@ -11,28 +15,31 @@ pause
 goto :eof
 
 :Target_kernel
-   rem valid languages: en ru ge et sp
+   :: Valid languages: en ru ge et sp
    set lang=en
 
-   echo *** building kernel with language '%lang%' ...
-
+   echo Building kernel with language '%lang%' ...
    echo lang fix %lang% > lang.inc
-   fasm -m 65536 bootbios.asm bootbios.bin
-   fasm -m 65536 kernel.asm kernel.mnt
-   fasm -m 65536 kernel.asm kernel.bin -dUEFI=1
+
+   :: FIXME: Getting the version using "git describe" 
+   :: is not yet supported on Windows
+   copy /y ver_stub.inc ver.inc
+
+   fasm -m 262144 kernel.asm kernel.mnt
+   fasm -m 262144 -dextended_primary_loader=1 kernel.asm kernel.mnt.ext_loader
    if not %errorlevel%==0 goto :Error_FasmFailed
 goto :eof
 
-
 :Error_FasmFailed
-echo error: fasm execution failed
+echo Error: fasm execution failed!
 erase lang.inc >nul 2>&1
+erase ver.inc >nul 2>&1
 echo.
 pause
 exit 1
 
 :Exit_OK
 echo.
-echo all operations have been done
+echo All operations have been done
 pause
 exit 0
