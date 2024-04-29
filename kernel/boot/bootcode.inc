@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
-;; Copyright (C) KolibriOS team 2004-2015. All rights reserved. ;;
 ;; Copyright (C) MenuetOS 2000-2004 Ville Mikael Turjanmaa      ;;
+;; Copyright (C) KolibriOS team 2004-2015. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;  BOOTCODE.INC                                                ;;
@@ -329,13 +330,6 @@ if lang eq ru
         mov     ax, 1100h
         int     10h
  ; End set VGA russian font
-else if lang eq et
-        mov     bp, ET_FNT              ; ET_FNT1
-        mov     bx, 1000h               ;
-        mov     cx, 255                 ; 256 symbols
-        xor     dx, dx                  ; 0 - position of first symbol
-        mov     ax, 1100h
-        int     10h
 end if
 
 ; draw frames
@@ -884,20 +878,6 @@ if lang eq ru
         mov     cl, 0xEB ; 'ы' in cp866
 @@:
         mov     [time_str+9], cl
-else if lang eq et
-        cmp     al, 1
-        ja      @f
-        mov     byte [time_str+9], ' '
-        mov     byte [time_str+10], ' '
-@@:
-else if lang eq sp
-; esperar 5/4/3/2 segundoS, 1 segundo
-        cmp     al, 1
-        mov     cl, 's'
-        ja      @f
-        mov     cl, ' '
-@@:
-        mov     [time_str+10], cl
 else
 ; wait 5/4/3/2 secondS, 1 second
         cmp     al, 1
@@ -952,11 +932,7 @@ if ~ defined extended_primary_loader
         or      al, 20h
         cmp     al, 'n'
         jz      .loadc
-        if lang eq sp
-        cmp     al, 's'
-        else
         cmp     al, 'y'
-        end if
         jnz     .waityn
         call    putchar
         mov     byte [space_msg+80], 186

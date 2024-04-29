@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2015. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -861,16 +862,8 @@ antiAliasing:
         ret
 
 iglobal
-fontSmoothing   db  2   ; = 0, 1 or 2
-fontSize        db  0   ; user mode setting
-font1:
-  if lang eq sp
-  file 'gui/char_sp.mt'
-  else if lang eq et
-  file 'gui/char_et.mt'
-  else
-  file 'gui/char.mt'
-  end if
-fontUni:
-file 'gui/charUni.mt'
+  fontSmoothing db 2    ; = 0, 1 or 2
+  fontSize      db 0    ; user mode setting
+  font1         file 'gui/char.mt'
+  fontUni       file 'gui/charUni.mt'
 endg

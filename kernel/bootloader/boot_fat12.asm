@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2015. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -271,11 +272,7 @@ conv_abs_to_THS:
         retn
 ;------------------------------------------
 
-if lang eq sp
-loading         db      cr,lf,'Iniciando el sistema ',00h
-else
 loading         db      cr,lf,'Starting system ',00h
-end if
 error_message   db      13,10
 kernel_name     db      'KERNEL  MNT ?',cr,lf,00h
 FirstRootDirSecNum      dw      ?

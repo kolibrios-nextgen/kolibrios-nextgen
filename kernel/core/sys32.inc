@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;;  Distributed under terms of the GNU General Public License.  ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -67,12 +68,8 @@ iglobal
   msg_exc_e     db "Page fault", 0
   msg_exc_11    db "Alignment Check", 0
 
-  if lang eq sp
-    include 'core/sys32-sp.inc'
-  else
-    msg_sel_ker   db "kernel", 0
-    msg_sel_app   db "application", 0
-  end if
+  msg_sel_ker   db "kernel", 0
+  msg_sel_app   db "application", 0
 
 endg
 
@@ -213,11 +210,7 @@ show_error_parameters:
         pop     ebx
 .no_ud:
         mov     edx, [current_slot];not scratched below
-        if lang eq sp
-        DEBUGF  1, "K : Proceso - terminado forzado PID: %x [%s]\n", [edx + APPDATA.tid], [current_slot]
-        else
         DEBUGF  1, "K : Process - forced terminate PID: %x [%s]\n", [edx + APPDATA.tid], [current_slot]
-        end if
         cmp     bl, 0x08
         jb      .l0
         cmp     bl, 0x11

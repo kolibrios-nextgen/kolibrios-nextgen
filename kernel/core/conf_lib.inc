@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -72,9 +73,6 @@ udev_midibase_def db '0x320',0
 endg
 
 iglobal
-if lang eq sp
-  include 'core/conf_lib-sp.inc'
-else
   ugui_mouse_speed db 'mouse_speed',0
   ugui_mouse_delay db 'mouse_delay',0
   udev db 'dev',0
@@ -83,8 +81,7 @@ else
   unet_addr db 'addr',0
   unet_mask db 'mask',0
   unet_gate db 'gate',0
-end if
-unet_def db 0
+  unet_def  db 0
 endg
 ; convert string to dword
 proc strtoint stdcall,strs
