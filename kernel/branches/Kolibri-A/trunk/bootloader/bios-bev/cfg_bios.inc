@@ -1,5 +1,0 @@
-BIOS_BOOT_BLOCK_SIZE    equ     1       ; in 512-blocks
-
-BIOS_PCI_VENDOR		equ	0x10EE
-BIOS_PCI_DEVICE		equ	0x0007
-BIOS_PCI_CLASS		equ	0x05000000
