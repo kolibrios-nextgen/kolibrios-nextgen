@@ -124,7 +124,7 @@ def prepare_test_img():
             execute("tup kernel.mnt.pretest")
         else:
             builds_eng = sys.argv[1]
-            kernel_mnt_pretest_subpath = "data/kernel/trunk/kernel.mnt.pretest"
+            kernel_mnt_pretest_subpath = "data/kernel/kernel.mnt.pretest"
             kernel_mnt_pretest = f"{builds_eng}/{kernel_mnt_pretest_subpath}"
             execute(f"cp {kernel_mnt_pretest} kernel.mnt.pretest", mute=True)
 

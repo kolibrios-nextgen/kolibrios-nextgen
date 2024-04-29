@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     # Insert faster kernel if no --compressed-kernel flag passed
     if "--compressed-kernel" not in sys.argv:
-        new_kernel = builds_get_contents("eng/data/kernel/trunk/kernel.mnt.pretest")
+        new_kernel = builds_get_contents("eng/data/kernel/kernel.mnt.pretest")
         img.add_file_path("KERNEL.MNT", new_kernel)
 
     log("Moving program into kolibri image... ", end = "")

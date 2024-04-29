@@ -42,7 +42,7 @@ Flags of EVENT.state field are defined in gui/event.inc.
                                       ;         free ones on receive
 
 As of SVN r3732 (assume same below) the definition is located in
-/kernel/trunk/const.inc and is as follows:
+/kernel/const.inc and is as follows:
 
 struct  APPOBJ                  ; common object header
         magic           dd ?    ;

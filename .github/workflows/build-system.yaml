@@ -27,7 +27,7 @@ jobs:
       - name: Check codestyle
         run: |
           wget https://gist.githubusercontent.com/VerySweetBread/d207dd2c7efbd3cdd18dc8322b194816/raw/bf21c89d7eb1df71e253dc72bcde86ea854df19f/checker.pl
-          find kernel/trunk -iname '*.asm' -or -iname '*.inc' -exec bash -c "echo {}; cat {} | perl checker.pl" \;
+          find kernel -iname '*.asm' -or -iname '*.inc' -exec bash -c "echo {}; cat {} | perl checker.pl" \;
 
       - name: Install toolchain
         run: |
@@ -88,7 +88,7 @@ jobs:
           echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"'                                  >> tup.config
           echo "CONFIG_KERPACK_CMD=&& kerpack %o"                                         >> tup.config
           echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm $ROOT/data/common/pestrip.asm %o"   >> tup.config
-          echo "CONFIG_VERSION_GEN_CMD=$ROOT/kernel/trunk/version-gen.sh"                 >> tup.config
+          echo "CONFIG_VERSION_GEN_CMD=$ROOT/kernel/version-gen.sh"                 >> tup.config
           echo "CONFIG_INSERT_REVISION_ID=1"                                              >> tup.config
           echo "CONFIG_BUILD_TYPE=eng"                                                    >> tup.config
 
@@ -130,7 +130,7 @@ jobs:
           echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"'                                  >> tup.config
           echo "CONFIG_KERPACK_CMD=&& kerpack %o"                                         >> tup.config
           echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm $ROOT/data/common/pestrip.asm %o"   >> tup.config
-          echo "CONFIG_VERSION_GEN_CMD=$ROOT/kernel/trunk/version-gen.sh"                 >> tup.config
+          echo "CONFIG_VERSION_GEN_CMD=$ROOT/kernel/version-gen.sh"                       >> tup.config
           echo "CONFIG_INSERT_REVISION_ID=1"                                              >> tup.config
           echo "CONFIG_BUILD_TYPE=rus"                                                    >> tup.config
 
