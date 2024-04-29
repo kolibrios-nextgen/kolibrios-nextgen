@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2024. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,16 +30,9 @@ org 0
 include "boot/bootstr.inc"      ; language-independent boot messages
 include "boot/preboot.inc"
 
-if lang eq ge
-include "boot/bootge.inc"       ; german system boot messages
-else if lang eq sp
-include "boot/bootsp.inc"       ; spanish system boot messages
-else if lang eq ru
+if lang eq ru
 include "boot/bootru.inc"       ; russian system boot messages
-include "boot/ru.inc"           ; Russian font
-else if lang eq et
-include "boot/bootet.inc"       ; estonian system boot messages
-include "boot/et.inc"           ; Estonian font
+include "boot/ru.inc"           ; russian font
 else
 include "boot/booten.inc"       ; english system boot messages
 end if

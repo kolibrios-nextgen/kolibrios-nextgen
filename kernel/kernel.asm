@@ -777,8 +777,6 @@ end if
         movzx   ecx, word [boot_y]
         if lang eq ru
         or      ecx, (10+30*6) shl 16
-        else if lang eq sp
-        or      ecx, (10+33*6) shl 16
         else
         or      ecx, (10+29*6) shl 16
         end if
@@ -885,8 +883,6 @@ include "detect/vortex86.inc"                     ; Vortex86 SoC detection code
         movzx   ecx, word [boot_y]
         if lang eq ru
         add     ecx, (10+19*6) shl 16 - 10
-        else if lang eq sp
-        add     ecx, (10+25*6) shl 16 - 10
         else
         add     ecx, (10+17*6) shl 16 - 10
         end if

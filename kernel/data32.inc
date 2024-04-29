@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -87,10 +88,6 @@ if lang eq ru
 if preboot_blogesc
   boot_tasking      cp866 'Все готово для запуска, нажмитре ESC для старта',0
 end if
-else if lang eq sp
-  include 'data32sp.inc'
-else if lang eq et
-  include 'data32et.inc'
 else
   boot_initirq      db   'Initialize IRQ',0
   boot_picinit      db   'Initialize PIC',0
@@ -160,7 +157,7 @@ notifyapp      db '/sys/@notify',0
 if lang eq ru
 ud_user_message  cp866 'Ошибка: неподдерживаемая инструкция процессора',0
 mtrr_user_message cp866 '"Обнаружена проблема с конфигурацией MTRR.\nПроизводительность может быть пониженной" -dW',0
-else if ~ lang eq sp
+else
 ud_user_message db 'Error: unsupported processor instruction',0
 mtrr_user_message db '"There is a problem with MTRR configuration.\nPerformance can be low" -dW',0
 end if
@@ -202,26 +199,8 @@ keyboard   dd SYSLANG
 
 if lang eq en
   SYSLANG = 1
-else if lang eq fi
-  SYSLANG = 2
-else if lang eq ge
-  SYSLANG = 3
 else if lang eq ru
   SYSLANG = 4
-else if lang eq fr
-  SYSLANG = 5
-else if lang eq et
-  SYSLANG = 6
-else if lang eq ua
-  SYSLANG = 7
-else if lang eq it
-  SYSLANG = 8
-else if lang eq be
-  SYSLANG = 9
-else if lang eq sp
-  SYSLANG = 10
-else if lang eq ca
-  SYSLANG = 11
 else
   display 'unsupported language specified',13,10
 end if
