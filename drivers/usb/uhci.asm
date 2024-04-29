@@ -11,7 +11,7 @@ include '../proc32.inc'
 include '../struct.inc'
 include '../macros.inc'
 include '../fdo.inc'
-include '../../kernel/trunk/bus/usb/common.inc'
+include '../../kernel/bus/usb/common.inc'
 
 ; =============================================================================
 ; ================================= Constants =================================

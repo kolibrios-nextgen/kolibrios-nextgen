@@ -130,7 +130,7 @@ a named subitem "group=path/<groupname>" and the file should be put in <groupnam
 extra_files = {
  {"/", "common/distr_data/autorun.inf"},
  {"/", "common/distr_data/KolibriOS_icon.ico"},
- {"Docs/stack.txt", "../kernel/trunk/docs/stack.txt"},
+ {"Docs/stack.txt", "../kernel/docs/stack.txt"},
  {"HD_Load/9x2klbr/", "common/HD_load/9x2klbr/LDKLBR.VXD"},
  {"HD_Load/MeOSLoad/", PROGS .. "/hd_load/meosload/AUTOEXEC.BAT"},
  {"HD_Load/MeOSLoad/", PROGS .. "/hd_load/meosload/CONFIG.SYS"},
@@ -377,7 +377,7 @@ end
 -- Programs that require FASM to compile.
 if tup.getconfig('NO_FASM') ~= 'full' then
 tup.append_table(img_files, {
- {"KERNEL.MNT", "../kernel/trunk/kernel.mnt"},
+ {"KERNEL.MNT", "../kernel/kernel.mnt"},
  {"@DOCKY", PROGS .. "/system/docky/trunk/docky"},
  {"@HA", PROGS .. "/other/ha/HA"},
  {"@ICON", PROGS .. "/system/icon_new/icon"},
@@ -850,7 +850,7 @@ make_img_command = make_img_command .. "dd if=/dev/zero of=kolibri.img count=288
 make_img_command = make_img_command .. " && mformat -f 1440 -i kolibri.img ::"
 -- copy bootloader
 if tup.getconfig("NO_FASM") ~= "full" then
-bootloader = "../kernel/trunk/bootloader/boot_fat12.bin"
+bootloader = "../kernel/bootloader/boot_fat12.bin"
 make_img_command = make_img_command .. " && dd if=" .. bootloader .. " of=kolibri.img count=1 bs=512 conv=notrunc 2>&1"
 table.insert(input_deps, bootloader)
 end
@@ -922,17 +922,17 @@ end
 
 -- build kolibri.raw
 raw_mbr = "../programs/hd_load/usb_boot/mbr"
-raw_bootsector = "../kernel/trunk/bootloader/extended_primary_loader/fat32/bootsect.bin"
+raw_bootsector = "../kernel/bootloader/extended_primary_loader/fat32/bootsect.bin"
 raw_files = {
  {"KOLIBRI.IMG", "kolibri.img"},
- {"KORDLDR.F32", "../kernel/trunk/bootloader/extended_primary_loader/fat32/kordldr.f32"},
- {"KERNEL.MNT", "../kernel/trunk/kernel.mnt.ext_loader"},
- {"CONFIG.INI", "../kernel/trunk/bootloader/extended_primary_loader/config.ini"},
- {"EFI/BOOT/BOOTX64.EFI", "../kernel/trunk/bootloader/uefi4kos/bootx64.efi"},
- {"EFI/BOOT/BOOTIA32.EFI", "../kernel/trunk/bootloader/uefi4kos/bootia32.efi"},
+ {"KORDLDR.F32", "../kernel/bootloader/extended_primary_loader/fat32/kordldr.f32"},
+ {"KERNEL.MNT", "../kernel/kernel.mnt.ext_loader"},
+ {"CONFIG.INI", "../kernel/bootloader/extended_primary_loader/config.ini"},
+ {"EFI/BOOT/BOOTX64.EFI", "../kernel/bootloader/uefi4kos/bootx64.efi"},
+ {"EFI/BOOT/BOOTIA32.EFI", "../kernel/bootloader/uefi4kos/bootia32.efi"},
  {"EFI/KOLIBRIOS/KOLIBRI.IMG", "kolibri.img"},
- {"EFI/KOLIBRIOS/KOLIBRI.INI", "../kernel/trunk/bootloader/uefi4kos/kolibri.ini"},
- {"EFI/KOLIBRIOS/KOLIBRI.KRN", "../kernel/trunk/kernel.mnt.ext_loader"}
+ {"EFI/KOLIBRIOS/KOLIBRI.INI", "../kernel/bootloader/uefi4kos/kolibri.ini"},
+ {"EFI/KOLIBRIOS/KOLIBRI.KRN", "../kernel/kernel.mnt.ext_loader"}
 }
 
 for i,v in ipairs(img_files) do
