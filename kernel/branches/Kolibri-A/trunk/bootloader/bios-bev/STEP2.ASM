@@ -1,1 +1,0 @@
-file 'step1.bin':512
