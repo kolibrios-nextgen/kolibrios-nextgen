@@ -104,13 +104,13 @@ proc fs_execute
         mov     [file_size], ebx
         lea     ebx, [hdr_cmdline]
         call    test_app_header  ; fill our app header data locals with values from header of given program (if its correct)
-        mov     esi, -TASKMAN_ERROR_NOT_A_EXECUTABLE
+        mov     esi, -ERROR_NOT_A_EXECUTABLE
         test    eax, eax
         jz      .err_hdr
 
         call    lock_application_table
         call    alloc_thread_slot   ; create a slot for new thread
-        mov     esi, -TASKMAN_ERROR_TOO_MANY_PROCESSES
+        mov     esi, -ERROR_TOO_MANY_PROCESSES
         test    eax, eax
         jz      .err_0
 
@@ -152,7 +152,7 @@ proc fs_execute
 @@:
         mov     [cmdline_size], eax
         stdcall create_process, [hdr_emem]  ; create a new process
-        mov     esi, -TASKMAN_ERROR_OUT_OF_MEMORY
+        mov     esi, -ERROR_OUT_OF_MEMORY
         test    eax, eax
         jz      .err_hdr
 

@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2024. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,11 +15,23 @@ cpl3    =  11111010b      ; code read dpl3
 D32     =  01000000b      ; 32bit segment
 G32     =  10000000b      ; page gran
 
-;;;;;;;;;;; task manager errors ;;;;;;;;;;
+;;;;;;;;;;; error codes ;;;;;;;;;;
 
-TASKMAN_ERROR_OUT_OF_MEMORY      = 30 ; 0x1E
-TASKMAN_ERROR_NOT_A_EXECUTABLE   = 31 ; 0x1F
-TASKMAN_ERROR_TOO_MANY_PROCESSES = 32 ; 0x20
+ERROR_SUCCESS            = 0  ; no error
+ERROR_DISK_BASE          = 1  ; ? (ot yet in use)
+ERROR_UNSUPPORTED_FS     = 2  ; function is not supported for the given file system
+ERROR_UNKNOWN_FS         = 3  ; unknown file system
+ERROR_PARTITION          = 4  ; partition error (not yet in use)
+ERROR_FILE_NOT_FOUND     = 5  ; file not found
+ERROR_END_OF_FILE        = 6  ; end of file (EOF)
+ERROR_MEMORY_POINTER     = 7  ; pointer lies outside of application memory
+ERROR_DISK_FULL          = 8  ; disk is full
+ERROR_FS_FAIL            = 9  ; file system error
+ERROR_ACCESS_DENIED      = 10 ; access denied
+ERROR_DEVICE             = 11 ; device error
+ERROR_OUT_OF_MEMORY      = 30 ; not enough memory
+ERROR_NOT_A_EXECUTABLE   = 31 ; file is not executable
+ERROR_TOO_MANY_PROCESSES = 32 ; too many processes
 
 ;;;;;;;;;;;;cpu_caps flags;;;;;;;;;;;;;;;;
 
