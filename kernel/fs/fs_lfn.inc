@@ -1,22 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2016. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-ERROR_SUCCESS        = 0
-ERROR_DISK_BASE      = 1
-ERROR_UNSUPPORTED_FS = 2
-ERROR_UNKNOWN_FS     = 3
-ERROR_PARTITION      = 4
-ERROR_FILE_NOT_FOUND = 5
-ERROR_END_OF_FILE    = 6
-ERROR_MEMORY_POINTER = 7
-ERROR_DISK_FULL      = 8
-ERROR_FS_FAIL        = 9
-ERROR_ACCESS_DENIED  = 10
-ERROR_DEVICE         = 11
 
 maxPathLength = 1000h
 
@@ -199,7 +187,7 @@ sys_fileSystemUnicode: ; with user pointer correctness checking
         jz      @f
 
         DEBUGF  1, "sysfn80 addr error\n"
-        mov     dword [image_of_eax], ERROR_MEMORY_POINTER
+        mov     dword [image_of_eax], EFAULT
         ret
 @@:
         jmp     fileSystemUnicode
@@ -211,7 +199,7 @@ sys_file_system_lfn: ; with user pointer correctness checking
         jz      @f
 
         DEBUGF  1, "sysfn70 addr error\n"
-        mov     dword [image_of_eax], ERROR_MEMORY_POINTER
+        mov     dword [image_of_eax], EFAULT
         ret
 @@:
         jmp     file_system_lfn
@@ -280,7 +268,7 @@ file_system_lfn:
         call    dyndisk_handler ; not returns if success
 .notfound:
         stdcall kernel_free, ebp
-        mov     dword[image_of_eax], ERROR_FILE_NOT_FOUND
+        mov     dword[image_of_eax], ENOENT
         ret
 
 .CD:
@@ -321,13 +309,13 @@ file_system_lfn:
         shl     eax, 1
         inc     eax
         shr     edi, 2
-        mov     dword[image_of_eax], ERROR_FILE_NOT_FOUND
+        mov     dword[image_of_eax], ENOENT
         bt      [edi*5+DRIVE_DATA+1], ax
         jnc     @f
         mov     ecx, [ebx+12]
         mov     edx, [ebx+16]
         mov     eax, [ebx]
-        mov     dword[image_of_eax], ERROR_UNSUPPORTED_FS
+        mov     dword[image_of_eax], ENOTSUP
         cmp     eax, fs_NumCdServices
         jae     @f
         add     ebx, 4
@@ -438,7 +426,7 @@ file_system_lfn:
         ret
 
 .access_denied:
-        mov     dword[image_of_eax], ERROR_ACCESS_DENIED
+        mov     dword[image_of_eax], EACCES
         ret
 
 .deviceInfo:

@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2024. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,11 +15,22 @@ cpl3    =  11111010b      ; code read dpl3
 D32     =  01000000b      ; 32bit segment
 G32     =  10000000b      ; page gran
 
-;;;;;;;;;;; task manager errors ;;;;;;;;;;
+;;;;;;;;;;;; KolibriOS-NG error codes ;;;;;;;;;;
+;; ERROR_* errors are specific to KolibriOS-NG
 
-TASKMAN_ERROR_OUT_OF_MEMORY      = 30 ; 0x1E
-TASKMAN_ERROR_NOT_A_EXECUTABLE   = 31 ; 0x1F
-TASKMAN_ERROR_TOO_MANY_PROCESSES = 32 ; 0x20
+ERROR_SUCCESS            = 0  ; no error
+ENOTSUP                  = 2  ; operation not supported
+ERROR_UNKNOWN_FS         = 3  ; unknown file system
+ENOENT                   = 5  ; no such file or directory
+ERROR_END_OF_FILE        = 6  ; end of file (EOF)
+EFAULT                   = 7  ; bad address / pointer lies outside of application memory
+ENOSPC                   = 8  ; no space left on device / disk is full
+ERROR_BAD_FS             = 9  ; corrupted file system
+EACCES                   = 10 ; access denied
+EIO                      = 11 ; input/output error (device error)
+ENOMEM                   = 30 ; not enough memory
+ENOEXEC                  = 31 ; executable file format error
+ERROR_TOO_MANY_PROCESSES = 32 ; too many processes
 
 ;;;;;;;;;;;;cpu_caps flags;;;;;;;;;;;;;;;;
 

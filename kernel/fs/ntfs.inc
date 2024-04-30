@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2016. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2055,7 +2056,7 @@ ntfs_CreateFile:
         mov     [ebp+NTFS.fileDataSize], eax
         mov     edi, [ebp+NTFS.BitmapStart]
         call    ntfsSpaceAlloc
-        movi    eax, ERROR_DISK_FULL
+        movi    eax, ENOSPC
         jc      ntfsErrorPop3
 ; create $IndexAllocation
         mov     edi, [ebp+NTFS.attr_offs]
@@ -2111,7 +2112,7 @@ ntfs_CreateFile:
 .refresh:
         mov     [ebp+NTFS.cur_size], 0
         call    ntfs_read_attr.continue
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jc      ntfsErrorPop3
         mov     edx, [ebp+NTFS.LastRead]
 @@:
@@ -2199,7 +2200,7 @@ ntfs_CreateFile:
         jmp     resizeAttribute
 
 .ret:
-        movi    eax, ERROR_UNSUPPORTED_FS
+        movi    eax, ENOTSUP
         stc
 @@:
         ret
@@ -2294,7 +2295,7 @@ ntfs_CreateFile:
         mov     [ebp+NTFS.cur_size], 0
         call    ntfs_read_attr.continue
         pop     [ebp+NTFS.cur_size]
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jc      ntfsErrorPop5
         pop     eax edi
 @@:         ; move index to the branch node
@@ -2910,7 +2911,7 @@ resizeAttribute:
         call    createMcbEntry
         pop     [ebp+NTFS.fileDataSize]
         pop     [ebp+NTFS.fileDataStart]
-        movi    eax, ERROR_UNSUPPORTED_FS
+        movi    eax, ENOTSUP
 .done:
         ret
 
@@ -2918,11 +2919,11 @@ resizeAttribute:
         add     esp, 24
         stc
 .err2:
-        movi    eax, ERROR_DISK_FULL
+        movi    eax, ENOSPC
         ret
 
 .err3:
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         add     esp, 20
         stc
         ret
@@ -4118,22 +4119,22 @@ ntfs_SetFileInfo:
         jmp     ntfsDone
 
 ntfsUnsupported:
-        push    ERROR_UNSUPPORTED_FS
+        push    ENOTSUP
         jmp     ntfsOut
 ntfsDevice:
-        push    ERROR_DEVICE
+        push    EIO
         jmp     ntfsOut
 ntfsNotFound:
-        push    ERROR_FILE_NOT_FOUND
+        push    ENOENT
         jmp     ntfsOut
 ntfsDenied:
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     ntfsOut
 ntfsFail:
-        push    ERROR_FS_FAIL
+        push    ERROR_BAD_FS
         jmp     ntfsOut
 ntfsDiskFull:
-        push    ERROR_DISK_FULL
+        push    ENOSPC
         jmp     ntfsOut
 ntfsErrorPop5:
         pop     ebx

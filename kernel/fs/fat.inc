@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2016. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1318,7 +1319,7 @@ fat_Read:
         jmp     .ret
 
 .noaccess:
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     .ret
 
 .endOfFile:
@@ -1439,7 +1440,7 @@ fat_Read:
 .noaccess3:
         pop     eax
 .noaccess2:
-        mov     byte [esp], ERROR_DEVICE
+        mov     byte [esp], EIO
 .done:
         call    fat_unlock
         pop     eax edx
@@ -1451,7 +1452,7 @@ fat_Read:
         jmp     .done
 
 .noaccess4:
-        mov     byte [esp], ERROR_DEVICE
+        mov     byte [esp], EIO
         jmp     @f
 
 .fileEnd2:
@@ -1599,7 +1600,7 @@ fat_ReadFolder:
         add     esp, 8
 .notfound:
         add     esp, 262*2+4
-        push    ERROR_DEVICE
+        push    EIO
         jmp     @f
 
 .done:
@@ -1621,7 +1622,7 @@ fat_ReadFolder:
         jmp     .ret
 
 .accessDenied:
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         xor     ebx, ebx
         jmp     .ret
 
@@ -1664,7 +1665,7 @@ fat1x_root_first:
         pop     ebx
         test    eax, eax
         jz      @f
-        movi    eax, ERROR_DEVICE
+        movi    eax, EIO
         stc
 @@:
         ret
@@ -1718,7 +1719,7 @@ fat_notroot_next_sector:
 
 fat_notroot_next_err:
         pop     ecx
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
 fat1x_root_extend_dir:
         stc
         ret
@@ -1750,7 +1751,7 @@ fat_notroot_first:
         push    ecx
 .deverr:
         pop     ecx
-        mov     eax, ERROR_DEVICE
+        mov     eax, EIO
         stc
 .ret:
         ret
@@ -1878,11 +1879,11 @@ fat_CreateFile:
         jmp     .common1
 
 .retNotFound:
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jmp     .ret1
 
 .noAccess:
-        movi    eax, ERROR_ACCESS_DENIED
+        movi    eax, EACCES
 .ret1:
         mov     [esp+28], eax
         call    fat_unlock
@@ -1891,7 +1892,7 @@ fat_CreateFile:
         ret
 
 .full:
-        movi    eax, ERROR_DISK_FULL
+        movi    eax, ENOSPC
         jmp     .ret1
 
 .noroot:
@@ -1909,7 +1910,7 @@ fat_CreateFile:
         jz      .noAccess   ; file
         mov     edx, [edi+20-2]
         mov     dx, [edi+26]
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         cmp     edx, 2
         jb      .ret1
 .pushnotroot:
@@ -1934,7 +1935,7 @@ fat_CreateFile:
         xor     eax, eax
         cmp     [ebp+FAT.createOption], 0
         jz      @f
-        mov     al, ERROR_ACCESS_DENIED
+        mov     al, EACCES
 @@:
         xor     ebx, ebx
         ret
@@ -2045,7 +2046,7 @@ fat_CreateFile:
         jnc     .scan_dir
 .fsfrfe3:
         add     esp, 12+8+12+36
-        movi    eax, ERROR_DEVICE
+        movi    eax, EIO
         jmp     .ret1
 
 .scan_dir:
@@ -2061,7 +2062,7 @@ fat_CreateFile:
         mov     edx, eax
         pop     eax
         jnc     .scan_dir
-        cmp     edx, ERROR_DEVICE
+        cmp     edx, EIO
         jz      .fsfrfe3
         push    eax
         lea     eax, [esp+16+8+12+8]
@@ -2310,13 +2311,13 @@ fat_CreateFile:
         jmp     .write_cluster
 
 .diskfull:
-        mov     eax, ERROR_DISK_FULL
+        mov     eax, ENOSPC
         jmp     .ret
 
 .writeerr:
         pop     eax eax
         sub     esi, ecx
-        mov     eax, ERROR_DEVICE
+        mov     eax, EIO
         jmp     .ret
 
 .writedone:
@@ -2403,7 +2404,7 @@ fat_Write:
         mov     [esp+4], eax
 ; hd_extend_file can return three error codes: FAT table error, device error or disk full.
 ; First two cases are fatal errors, in third case we may write some data
-        cmp     al, ERROR_DISK_FULL
+        cmp     al, ENOSPC
         jnz     @f
 ; correct number of bytes to write
         mov     ecx, [edi+28]
@@ -2433,11 +2434,11 @@ fat_Write:
 .device_err2:
         pop     ecx
 .device_err:
-        mov     byte [esp+8], ERROR_DEVICE
+        mov     byte [esp+8], EIO
         jmp     .ret
 
 .fat_err:
-        mov     byte [esp+8], ERROR_FS_FAIL
+        mov     byte [esp+8], ERROR_BAD_FS
         jmp     .ret
 
 .length_ok:
@@ -2571,7 +2572,7 @@ hd_extend_file.zero_size:
 ; extends file on hd to given size (new data area is undefined)
 ; in: edi->direntry, ecx=new size
 ; out: CF=0 => OK, eax=0
-;      CF=1 => error, eax=code (ERROR_FS_FAIL or ERROR_DISK_FULL or ERROR_DEVICE)
+;      CF=1 => error, eax=code (ERROR_BAD_FS or ENOSPC or EIO)
 hd_extend_file:
         push    esi
         mov     esi, [ebp+FAT.SECTORS_PER_CLUSTER]
@@ -2591,7 +2592,7 @@ hd_extend_file:
         pop     ecx
 .device_err2:
         pop     esi
-        push    ERROR_DEVICE
+        push    EIO
 .ret_err:
         pop     eax
         stc
@@ -2603,7 +2604,7 @@ hd_extend_file:
         jb      .last_loop
 .fat_err:
         pop     ecx esi
-        push    ERROR_FS_FAIL
+        push    ERROR_BAD_FS
         jmp     .ret_err
 .last_found:
         push    eax
@@ -2662,7 +2663,7 @@ hd_extend_file:
         jmp     .device_err2
 .disk_full:
         pop     eax edx esi
-        movi    eax, ERROR_DISK_FULL
+        movi    eax, ENOSPC
         stc
         ret
 
@@ -2697,7 +2698,7 @@ fat_SetFileEnd:
         jmp     .ret
 
 .access_denied:
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     .ret
 
 .endOfFile:
@@ -2705,7 +2706,7 @@ fat_SetFileEnd:
         jmp     .ret
 
 .errorDevice:
-        push    ERROR_DEVICE
+        push    EIO
         jmp     .ret
 
 .expand:
@@ -2715,7 +2716,7 @@ fat_SetFileEnd:
         call    hd_extend_file
         push    eax             ; return code
         jnc     .expand_ok
-        cmp     al, ERROR_DISK_FULL
+        cmp     al, ENOSPC
         jnz     .pop_ret
 .expand_ok: ; save directory
         mov     eax, [edi+28]
@@ -2772,7 +2773,7 @@ fat_SetFileEnd:
         test    eax, eax
         jz      .next_cluster
 .err_next:
-        mov     byte [esp+4], ERROR_DEVICE
+        mov     byte [esp+4], EIO
 .next_cluster:
         pop     eax
         sub     dword [esp+20], 0x200
@@ -2788,7 +2789,7 @@ fat_SetFileEnd:
         jnc     .zero_loop
         pop     eax
 .pop_ret11:
-        mov     byte [esp], ERROR_DEVICE
+        mov     byte [esp], EIO
 .pop_ret:
         call    update_disk
         pop     eax ecx ecx ebp ebx ecx
@@ -2801,13 +2802,13 @@ fat_SetFileEnd:
 
 .error_fat:
         pop     eax
-        mov     byte [esp], ERROR_FS_FAIL
+        mov     byte [esp], ERROR_BAD_FS
         jmp     .pop_ret
 
 .error_fat2:
         pop     eax ecx eax
         call    update_disk
-        push    ERROR_FS_FAIL
+        push    ERROR_BAD_FS
         jmp     .ret
 
 .truncate:
@@ -2834,7 +2835,7 @@ fat_SetFileEnd:
 .device_err3:
         pop     eax ecx eax
         call    update_disk
-        push    ERROR_DEVICE
+        push    EIO
         jmp     .ret
 
 @@:
@@ -3038,25 +3039,25 @@ fat_Delete:
 .err1:
         popad
 .err2:
-        push    ERROR_DEVICE
+        push    EIO
 .ret:
         call    fat_unlock
         pop     eax
         ret
 
 .notFound:
-        push    ERROR_FILE_NOT_FOUND
+        push    ENOENT
         jmp     .ret
 
 .error_fat:
         popad
-        push    ERROR_FS_FAIL
+        push    ERROR_BAD_FS
         jmp     .ret
 
 .notempty:
         popad
 .access_denied2:
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     .ret
 
 .empty:

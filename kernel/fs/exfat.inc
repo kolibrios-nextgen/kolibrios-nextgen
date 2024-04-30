@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2021-2022. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.  ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1030,7 +1031,7 @@ align 4
         stc
         ret
 .error:
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jmp     @b
 ;------------------------------------------------------------------------------
 exFAT_ReadFile:
@@ -1182,7 +1183,7 @@ exFAT_ReadFile:
 
 .noaccess:
 ; DEBUGF  1, "K : exFAT_ReadFile.noaccess \n"
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     .ret
 
 .endOfFile:
@@ -1512,7 +1513,7 @@ exFAT_ReadFile:
         pop     dword [ebp+exFAT.RAX_high]
 .noaccess2:
 ; DEBUGF  1, "K : exFAT_ReadFile.noaccess2 \n"
-        mov     byte [esp], ERROR_DEVICE
+        mov     byte [esp], EIO
 .done:
 ; DEBUGF  1, "K : exFAT_ReadFile.done \n"
         call    exFAT_unlock
@@ -1536,7 +1537,7 @@ exFAT_ReadFile:
 
 .noaccess4:
 ; DEBUGF  1, "K : exFAT_ReadFile.noaccess4 \n"
-        mov     byte [esp], ERROR_DEVICE
+        mov     byte [esp], EIO
         jmp     @f
 
 .fileEnd2:
@@ -1870,8 +1871,8 @@ exFAT_ReadFolder:
 .notfound:
 ; DEBUGF  1, "K : exFAT_ReadFolder.notfound \n"
         add     esp, 262*2+4
-; DEBUGF  1, "K : exFAT_ReadFolder.ERROR_DEVICE \n"
-        push    ERROR_DEVICE
+; DEBUGF  1, "K : exFAT_ReadFolder.EIO \n"
+        push    EIO
         jmp     @f
 ;------------------------------------------------------------------------------
 .done:
@@ -1911,8 +1912,8 @@ exFAT_ReadFolder:
         jmp     .ret
 ;------------------------------------------------------------------------------
 .accessDenied:
-; DEBUGF  1, "K : exFAT_ReadFolder.ERROR_ACCESS_DENIED \n"
-        push    ERROR_ACCESS_DENIED
+; DEBUGF  1, "K : exFAT_ReadFolder.EACCES \n"
+        push    EACCES
         xor     ebx, ebx
         jmp     .ret
 ;------------------------------------------------------------------------------
@@ -2163,7 +2164,7 @@ exFAT_Delete:
         popad
 .err2:
 ; DEBUGF  1, "K : exFAT_Delete.err2:\n"
-        push    ERROR_DEVICE
+        push    EIO
 .ret:
 ; DEBUGF  1, "K : exFAT_Delete.ret:\n"
         call    exFAT_unlock
@@ -2172,13 +2173,13 @@ exFAT_Delete:
 
 .notFound:
 ; DEBUGF  1, "K : exFAT_Delete.notFound:\n"
-        push    ERROR_FILE_NOT_FOUND
+        push    ENOENT
         jmp     .ret
 
 .error_fat:
 ; DEBUGF  1, "K : exFAT_Delete.error_fat:\n"
         popad
-        push    ERROR_FS_FAIL
+        push    ERROR_BAD_FS
         jmp     .ret
 
 .notempty:
@@ -2186,7 +2187,7 @@ exFAT_Delete:
         popad
 .access_denied2:
 ; DEBUGF  1, "K : exFAT_Delete.access_denied2:\n"
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     .ret
 
 .empty:
@@ -2608,7 +2609,7 @@ exFAT_notroot_next_err:
 ;        dec     ecx
         pop     ecx
 ;        js      .1
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
 ;.1:
         stc
         ret
@@ -2672,7 +2673,7 @@ exFAT_notroot_first:
 .deverr:
 ; DEBUGF  1, "K : exFAT_notroot_first.deverr\n"
         pop     ecx
-        mov     eax, ERROR_DEVICE
+        mov     eax, EIO
         stc
 .ret:
 ; DEBUGF  1, "K : exFAT_notroot_first.ret\n"

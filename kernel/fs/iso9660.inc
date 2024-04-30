@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2016. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -40,7 +41,7 @@ endg
 
 ;-----------------------------------------------------------------------------
 fs_NotImplemented:
-        movi    eax, ERROR_UNSUPPORTED_FS
+        movi    eax, ENOTSUP
         ret
 ;-----------------------------------------------------------------------------
 reserve_cd:
@@ -174,14 +175,14 @@ fs_CdRead:
         cmp     [DevErrorCode], 0
         jne     .noaccess
         xor     ebx, ebx
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         ret
 
 .noaccess_3:
         pop     eax edx ecx
 .noaccess:
         xor     ebx, ebx
-        movi    eax, ERROR_ACCESS_DENIED
+        movi    eax, EACCES
         ret
 
 @@:
@@ -262,7 +263,7 @@ fs_CdReadFolder:
         cmp     [DevErrorCode], 0
         jne     .noaccess_1
         xor     ebx, ebx
-        mov     eax, ERROR_FILE_NOT_FOUND
+        mov     eax, ENOENT
         ret
 
 .found:
@@ -272,7 +273,7 @@ fs_CdReadFolder:
         pop     edi
 .noaccess_1:
         xor     ebx, ebx
-        mov     eax, ERROR_ACCESS_DENIED
+        mov     eax, EACCES
         ret
 
 .end_buffer:
@@ -482,7 +483,7 @@ cd_get_parameters_of_file_1:
 ;-----------------------------------------------------------------------------
 fs_CdGetFileInfo:
         call    cd_find_lfn
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jc      @f
         mov     edi, edx
         mov     eax, [ebx+4]

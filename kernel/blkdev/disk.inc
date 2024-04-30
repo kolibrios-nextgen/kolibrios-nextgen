@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2011-2021. All rights reserved. ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
 ;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1321,7 +1322,7 @@ default_fs_functions_end:
 endg
 
 proc default_fs_get_file_info uses edi
-        movi    eax, ERROR_UNSUPPORTED_FS
+        movi    eax, ENOTSUP
         cmp     byte[esi], 0
         jnz     .done
         movi    ecx, 40 ; len of BDFE without filename
@@ -1331,7 +1332,7 @@ proc default_fs_get_file_info uses edi
 @@:
         mov     ebx, [ebx+f70s5arg.buf]
         stdcall is_region_userspace, ebx, ecx
-        movi    eax, ERROR_MEMORY_POINTER
+        movi    eax, EFAULT
         jnz     .done
         mov     edi, ebx
         xor     eax, eax
@@ -1453,7 +1454,7 @@ dyndisk_handler:
         cmp     byte [ebx], 9
         jz      .cleanup_ecx
 .access_denied:
-        movi    eax, ERROR_ACCESS_DENIED
+        movi    eax, EACCES
 .cleanup_ecx:
         mov     [esp+32], eax
         mov     esi, ecx        ; disk*dereference assume that esi points to DISK
@@ -1467,7 +1468,7 @@ dyndisk_handler:
 
 .dyndisk_cleanup:
         pop     ecx edx
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jmp     .cleanup_ecx
 
 .haspartition:
@@ -1594,19 +1595,19 @@ dyndisk_handler:
         movi    eax, ERROR_UNKNOWN_FS
         cmp     edi, default_fs_functions
         jz      .cleanup
-        movi    eax, ERROR_UNSUPPORTED_FS
+        movi    eax, ENOTSUP
         jmp     .cleanup
 
 .errorRename:
         pop     eax eax ebp edx
 .notfound2:
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jmp     .cleanup
 
 .nomedia:
         test    ecx, ecx
         jnz     .notfound2
-        mov     dword [esp+32], ERROR_DEVICE
+        mov     dword [esp+32], EIO
         mov     esi, edx
         jmp     @b
 
