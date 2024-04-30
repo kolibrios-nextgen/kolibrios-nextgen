@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2013-2016. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -325,7 +326,7 @@ extfsReadBlock:
         add     esp, 4
         test    eax, eax
         jz      @f
-        movi    eax, ERROR_DEVICE
+        movi    eax, EIO
         stc
 @@:
         ret
@@ -477,7 +478,7 @@ extfsInodeAlloc:
         sub     ebx, 32
         cmp     ebx, [ebp+EXTFS.descriptorTable]
         jnc     .test_block_group
-        movi    eax, ERROR_DISK_FULL
+        movi    eax, ENOSPC
         push    eax
 .fail:
         pop     edi
@@ -631,7 +632,7 @@ extfsExtentAlloc:
         sub     ebx, 32
         cmp     ebx, [ebp+EXTFS.descriptorTable]
         jnc     .test_block_group
-        movi    eax, ERROR_DISK_FULL
+        movi    eax, ENOSPC
         push    eax
 .fail:
         add     esp, 12
@@ -673,7 +674,7 @@ extfsGetExtent:
         jmp     .extentTreeSearch
 
 .fail:
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jmp     .fail2
 
 .leaf_block:
@@ -838,7 +839,7 @@ writeInode:
         ret
 
 @@:
-        movi    eax, ERROR_DEVICE
+        movi    eax, EIO
         stc
         jmp     .ret
 
@@ -879,7 +880,7 @@ indirectBlockAlloc:
         jnz     @f
         pop     ecx ebx edi
 .err:
-        mov     al, ERROR_FS_FAIL
+        mov     al, ERROR_BAD_FS
         stc
         ret
 
@@ -950,7 +951,7 @@ doublyIndirectBlockAlloc:
         jnz     @f
         pop     ecx edi
 .err:
-        mov     al, ERROR_FS_FAIL
+        mov     al, ERROR_BAD_FS
         stc
         ret
 
@@ -1129,7 +1130,7 @@ extfsExtendFile:
         jz      @f
         cmp     dword[edi-4], 0
         jnz     @f
-        mov     al, ERROR_FS_FAIL
+        mov     al, ERROR_BAD_FS
 .errFree:
         push    ecx eax
         stdcall kernel_free, esi
@@ -1147,7 +1148,7 @@ extfsExtendFile:
 
 .newBlock:
         pop     ebx ecx
-        mov     al, ERROR_FS_FAIL
+        mov     al, ERROR_BAD_FS
         test    edx, edx
         jnz     .errFree
         mov     [ebp+EXTFS.inodeBuffer.tripleAddress], ebx
@@ -1554,7 +1555,7 @@ unlinkInode:
 
 .fail:
         pop     edi
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         stc
 .fail_loop:
         pop     edi
@@ -1700,7 +1701,7 @@ findInode:
         jnz     @f
         xor     edi, edi    ; path folder not found
 @@:
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         stc
 .ret:
         pop     esi ecx ebx
@@ -1715,7 +1716,7 @@ writeSuperblock:
         ret
 
 extfsWritingInit:
-        movi    eax, ERROR_UNSUPPORTED_FS
+        movi    eax, ENOTSUP
         test    [ebp+EXTFS.mountType], READ_ONLY
         jnz     @f
 ext_lock:
@@ -1922,7 +1923,7 @@ ext_ReadFolder:
         ret
 
 .error_bad_len:
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
 .error_read_subinode:
 .error_get_block:
         lea     esp, [edi+32]
@@ -1934,11 +1935,11 @@ ext_ReadFolder:
         ret
 
 .error_empty_dir:
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jmp     .error_ret
 
 .error_not_found:
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jmp     .error_ret
 
 ;----------------------------------------------------------------
@@ -1948,7 +1949,7 @@ ext_ReadFile:
         pushd   0 eax
         jc      .ret
         lea     esi, [ebp+EXTFS.inodeBuffer]
-        mov     byte [esp], ERROR_ACCESS_DENIED
+        mov     byte [esp], EACCES
         test    [esi+INODE.accessMode], FLAG_FILE
         jz      .ret    ; not a file
         mov     byte [esp], ERROR_END_OF_FILE
@@ -2037,7 +2038,7 @@ ext_ReadFile:
         jmp     .piece
 
 .errorRead:
-        movi    eax, ERROR_DEVICE
+        movi    eax, EIO
 .errorGet:
         pop     ebx ebx
         mov     [esp], eax
@@ -2212,7 +2213,7 @@ ext_Delete:
 
 .not_empty:
         pop     eax eax
-        push    ERROR_ACCESS_DENIED
+        push    EACCES
         jmp     .ret
 
 .error8:
@@ -2432,7 +2433,7 @@ ext_CreateFile:
         jmp     ext_WriteFile.start
 
 .exist:
-        movi    eax, ERROR_ACCESS_DENIED
+        movi    eax, EACCES
         test    [ebp+EXTFS.inodeBuffer.accessMode], FLAG_FILE
         jz      .error  ; not a file
         pop     ebx
@@ -2457,7 +2458,7 @@ ext_WriteFile:
         call    findInode
         pushd   0 eax
         jc      .ret
-        mov     byte [esp], ERROR_ACCESS_DENIED
+        mov     byte [esp], EACCES
         test    [ebp+EXTFS.inodeBuffer.accessMode], FLAG_FILE
         jz      .ret    ; not a file
         mov     byte [esp], 0
@@ -2552,7 +2553,7 @@ ext_WriteFile:
 
 .errorDevice:
         pop     eax eax
-        movi    eax, ERROR_DEVICE
+        movi    eax, EIO
 .errorGet2:
         pop     ebx
 .errorGet:
@@ -2583,7 +2584,7 @@ ext_SetFileEnd:
         call    findInode
         jc      .error2
         lea     edi, [ebp+EXTFS.inodeBuffer]
-        movi    eax, ERROR_ACCESS_DENIED
+        movi    eax, EACCES
         test    [edi+INODE.accessMode], FLAG_FILE
         jz      .error2 ; not a file
         mov     eax, [ebx+4]

@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -34,7 +35,7 @@ sys_pipe2:
 
         push    ebp
         test    ecx, ecx
-        mov     ebp, -EFAULT
+        mov     ebp, -_EFAULT
         js      .fail
 
         test    edx, not O_CLOEXEC

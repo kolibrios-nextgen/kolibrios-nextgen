@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2013-2022. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License   ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License    ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -515,7 +516,7 @@ proc xfs_read_inode uses ebx, _inode_lo, _inode_hi, _buffer
 
         cmp     [ebx+xfs_inode.di_core.di_magic], XFS_DINODE_MAGIC
         jz      .quit
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
 .quit:
         mov     edx, ebx
 .error:
@@ -646,7 +647,7 @@ proc xfs._.readdir_block _literal_area, _out_buf
         jnz     .error
         mov     eax, [ebp+XFS.dir_block_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         mov     eax, [ebp+XFS.dirblocksize]
         movbe   ecx, [ebx+eax-sizeof.xfs_dir2_block_tail+xfs_dir2_block_tail.stale]
@@ -777,7 +778,7 @@ proc xfs._.dir_btree_skip_read uses ebx ecx edx esi edi, _cur_dirblock, _offset_
         mov     ebx, [_cur_dirblock]
         mov     eax, [ebp+XFS.dir_data_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         mov     eax, ebx
         add     eax, [ebp+XFS.dirblocksize]
@@ -931,7 +932,7 @@ proc xfs._.readdir uses ebx esi edi, _start_number, _entries_to_read, _dst, _src
         jmp     .quit
 @@:
         cmp     eax, XFS_DINODE_FMT_EXTENTS
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         call    xfs._.get_last_dirblock
         test    eax, eax
@@ -982,7 +983,7 @@ proc xfs._.lookup_sf _name, _len
 .next_name:
         dec     edx
         jns     @f
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         jmp     .error
 @@:
         movzx   ecx, [edi+xfs_dir2_sf_entry.namelen]
@@ -1018,7 +1019,7 @@ proc xfs._.lookup_block uses esi, _name, _len
         jnz     .error
         mov     eax, [ebp+XFS.dir_block_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         stdcall xfs_hashname, [_name+4], [_len]
         add     ebx, [ebp+XFS.dirblocksize]
@@ -1080,7 +1081,7 @@ proc xfs._.get_inode_by_addr uses ebx esi edi, _inode_buf
         mov     ebx, [ebp+XFS.cur_dirblock]
         mov     eax, [ebp+XFS.dir_data_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         movbe   edx, [ebx+esi+xfs_dir2_data_entry.inumber.lo]
         movbe   eax, [ebx+esi+xfs_dir2_data_entry.inumber.hi]
@@ -1105,7 +1106,7 @@ proc xfs._.lookup_leaf uses ebx esi edi, _name, _len
         mov     ebx, [ebp+XFS.cur_dirblock]
         movzx   eax, [ebp+XFS.dir_leaf1_magic]
         cmp     [ebx+xfs_dir2_leaf.hdr.info.magic], ax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         stdcall xfs_hashname, [_name+4], [_len]
         cmp     [ebp+XFS.version], 5
@@ -1158,7 +1159,7 @@ endl
         movzx   eax, [ebp+XFS.dir_leafn_magic]
         cmp     [ebx+xfs_dir2_leaf.hdr.info.magic], ax
         jz      .leaf
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jmp     .error
 .node:
         cmp     [ebp+XFS.version], 5
@@ -1280,7 +1281,7 @@ proc xfs._.get_inode_short uses esi, _inode:qword, _len, _name
         mov     edx, dword[_inode+DQ.hi]
         stdcall xfs_read_inode, eax, edx, [ebp+XFS.cur_inode]
         test    eax, eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         ; switch directory ondisk format
         mov     ebx, edx
@@ -1538,7 +1539,7 @@ proc xfs._.get_addr_by_hash uses ebx esi, _base, _len
         dec     edx
         jmp     .next
 .not_found:
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         test    esp, esp
         ret
 endp
@@ -1557,7 +1558,7 @@ proc xfs_GetFileInfo uses ecx edx esi edi
         jnz     .error
         stdcall xfs_read_inode, eax, edx, [ebp+XFS.cur_inode]
         test    eax, eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         stdcall xfs_get_inode_info, edx, [ebx+f70s5arg.buf]
 .quit:
@@ -1750,7 +1751,7 @@ endl
         jnz     .error
         stdcall xfs_read_inode, eax, edx, [ebp+XFS.cur_inode]
         test    eax, eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         mov     [ebp+XFS.cur_inode_save], edx
         mov     ebx, edx
@@ -1908,7 +1909,7 @@ proc xfs._.get_before_by_hashval uses ebx edx esi edi, _base, _count, _hash
         inc     ecx
         cmp     ecx, edx
         jnz     .node.next
-        movi    eax, ERROR_FILE_NOT_FOUND
+        movi    eax, ENOENT
         test    esp, esp
         jmp     .error
 .node.leaf_found:
@@ -1987,7 +1988,7 @@ proc xfs._.walk_btree uses ebx esi edi, _ptr, _size, _callback_extent, _callback
         mov     ebx, [ebp+XFS.cur_block]
         mov     eax, [ebp+XFS.bmap_magic]
         cmp     [ebx+xfs_bmbt_block.bb_magic], eax
-        movi    eax, ERROR_FS_FAIL
+        movi    eax, ERROR_BAD_FS
         jnz     .error
         movzx   ecx, [ebx+xfs_bmbt_block.bb_numrecs]
         xchg    cl, ch

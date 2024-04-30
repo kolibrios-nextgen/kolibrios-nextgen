@@ -1,13 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-ENOENT  =      2
 EBADF   =      9
-EFAULT  =     14
+_EFAULT  =     14 ; conflicts with EFAULT from const.inc.
 ;EINVAL  =     22      11   defined in stack.inc
 ENFILE  =     23
 EMFILE  =     24

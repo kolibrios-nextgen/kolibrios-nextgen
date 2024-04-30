@@ -1,7 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                              ;;
 ;; Copyright (C) KolibriOS team 2004-2022. All rights reserved. ;;
-;;  Distributed under terms of the GNU General Public License.  ;;
+;; Copyright (C) KolibriOS-NG team 2024. All rights reserved.   ;;
+;; Distributed under terms of the GNU General Public License.   ;;
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -93,7 +94,7 @@ proc fs_execute
         mov     [cmdline], ecx
         mov     [path_string], ebx
         mov     [filename_size], eax
-        mov     esi, -ERROR_FILE_NOT_FOUND
+        mov     esi, -ENOENT
         test    eax, eax
         jz      .err_file
         stdcall load_file, ebx
@@ -104,13 +105,13 @@ proc fs_execute
         mov     [file_size], ebx
         lea     ebx, [hdr_cmdline]
         call    test_app_header  ; fill our app header data locals with values from header of given program (if its correct)
-        mov     esi, -TASKMAN_ERROR_NOT_A_EXECUTABLE
+        mov     esi, -ENOEXEC
         test    eax, eax
         jz      .err_hdr
 
         call    lock_application_table
         call    alloc_thread_slot   ; create a slot for new thread
-        mov     esi, -TASKMAN_ERROR_TOO_MANY_PROCESSES
+        mov     esi, -ERROR_TOO_MANY_PROCESSES
         test    eax, eax
         jz      .err_0
 
@@ -152,7 +153,7 @@ proc fs_execute
 @@:
         mov     [cmdline_size], eax
         stdcall create_process, [hdr_emem]  ; create a new process
-        mov     esi, -TASKMAN_ERROR_OUT_OF_MEMORY
+        mov     esi, -ENOMEM
         test    eax, eax
         jz      .err_hdr
 
