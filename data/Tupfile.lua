@@ -385,6 +385,7 @@ tup.append_table(img_files, {
  {"@NOTIFY", PROGS .. "/system/notify3/notify"},
  {"@OPEN", PROGS .. "/system/open/open"},
  {"@TASKBAR", PROGS .. "/system/taskbar/trunk/TASKBAR"},
+ {"@RESHARE", PROGS .. "/system/reshare/reshare"},
  {"@SS", PROGS .. "/system/scrsaver/scrsaver"},
  {"@VOLUME", PROGS .. "/media/volume/volume"},
  {"HACONFIG", PROGS .. "/other/ha/HACONFIG"},
@@ -649,7 +650,6 @@ end -- tup.getconfig('NO_JWASM') ~= 'full'
 -- Programs that require C-- to compile.
 if tup.getconfig('NO_CMM') ~= 'full' then
 tup.append_table(img_files, {
- {"@RESHARE", PROGS .. "/cmm/misc/reshare.com"},
  {"APP_PLUS", PROGS .. "/cmm/app_plus/app_plus.com"},
  {"EASYSHOT", PROGS .. "/cmm/misc/easyshot.com"},
  {"MOUSECFG", PROGS .. "/cmm/mousecfg/mousecfg.com"},
