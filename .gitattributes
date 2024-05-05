@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
+
+# Global attributes for forcing line endings normalization of specific files
+
+* text=auto
+
+# Docker files
+Dockerfile* text eol=lf encoding=utf-8 linguist-language=Dockerfile
