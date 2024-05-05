@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
+
+# Global ignoring of different binaries and another temporary files
+
+# Build results
+data/*.img
+data/*.iso
+data/*.raw

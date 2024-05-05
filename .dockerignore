@@ -1,1 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
+
+# Global ignoring of unused in build process files
+
+# Configs
 **/.github
+**/.dockerignore
+**/.gitignore
