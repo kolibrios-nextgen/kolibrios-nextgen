@@ -1,21 +1,31 @@
-FROM kolibriosnextgen-toolchain:latest AS builder
-WORKDIR /app
+# SPDX-License-Identifier: GPL-2.0-only
+# SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
+
+# Build stage
+FROM kolibriosng-toolchain:latest AS build
+
+# Copy sources and set working directory
+WORKDIR /src
 COPY . .
 
+# Setup C--
 RUN \
-    echo 'exec /app/programs/cmm/c--/c--.elf $*' > /home/autobuild/tools/win32/bin/c-- && \
-    chmod +x /app/programs/cmm/c--/c--.elf && \
-    chmod +x /home/autobuild/tools/win32/bin/c-- && \
+    echo 'exec /src/programs/cmm/c--/c--.elf $*' > /home/autobuild/tools/win32/bin/c-- && \
+    chmod +x /src/programs/cmm/c--/c--.elf && \
+    chmod +x /home/autobuild/tools/win32/bin/c--
+
+# Build system
+RUN \
     export PATH=/home/autobuild/tools/win32/bin:$PATH && \
-    export ROOT=/app && \
+    export ROOT=/src && \
     echo "CONFIG_LANG=en" >> tup.config && \
     echo "CONFIG_NO_JWASM=full" >> tup.config && \
     echo "CONFIG_NO_MSVC=full" >> tup.config && \
     echo "CONFIG_TOOLCHAIN_LIBPATH=/home/autobuild/tools/win32/mingw32/lib" >> tup.config && \
     echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"' >> tup.config && \
     echo "CONFIG_KERPACK_CMD=&& kerpack %o" >> tup.config && \
-    echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm /app/data/common/pestrip.asm %o" >> tup.config && \
-    echo "CONFIG_VERSION_GEN_CMD=/app/kernel/trunk/version-gen.sh" >> tup.config && \
+    echo "CONFIG_PESTRIP_CMD=&& EXENAME=%o fasm /src/data/common/pestrip.asm %o" >> tup.config && \
+    echo "CONFIG_VERSION_GEN_CMD=/src/kernel/version-gen.sh" >> tup.config && \
     echo "CONFIG_INSERT_REVISION_ID=1" >> tup.config && \
     echo "CONFIG_BUILD_TYPE=eng" >> tup.config && \
     rm programs/develop/libraries/kos_mbedtls/library/Tupfile.lua && \
@@ -25,5 +35,10 @@ RUN \
     tup generate build-once.sh && \
     ./build-once.sh
 
+# Export stage
 FROM scratch AS export
-COPY --from=builder /app/data/kolibri.iso .
+
+# Copy built images
+COPY --from=build /src/data/kolibri.img .
+COPY --from=build /src/data/kolibri.iso .
+COPY --from=build /src/data/kolibri.raw .
