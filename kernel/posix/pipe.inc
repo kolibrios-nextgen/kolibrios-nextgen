@@ -35,7 +35,7 @@ sys_pipe2:
 
         push    ebp
         test    ecx, ecx
-        mov     ebp, -_EFAULT
+        mov     ebp, -EFAULT
         js      .fail
 
         test    edx, not O_CLOEXEC
@@ -50,7 +50,7 @@ sys_pipe2:
         call    create_object
         mov     [.fdread], eax
         test    eax, eax
-        mov     ebp, -EMFILE
+        mov     ebp, -ENFILE
         jz      .err_0
 
         mov     ecx, sizeof.FILED

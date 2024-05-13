@@ -6,13 +6,6 @@
 ;;                                                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-EBADF   =      9
-_EFAULT  =     14 ; conflicts with EFAULT from const.inc.
-;EINVAL  =     22      11   defined in stack.inc
-ENFILE  =     23
-EMFILE  =     24
-EPIPE   =     32
-
 FILEOP_CLOSE    =     0
 FILEOP_READ     =     1
 FILEOP_WRITE    =     2
