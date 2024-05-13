@@ -120,24 +120,6 @@ SS_BLOCKED              = 0x8000
 SOCKET_BUFFER_SIZE      = 4096*8        ; must be 4096*(power of 2) where 'power of 2' is at least 8
 MAX_backlog             = 20            ; maximum backlog for stream sockets
 
-; Error Codes
-ENOBUFS                 = 1
-EINPROGRESS             = 2
-EOPNOTSUPP              = 4
-EWOULDBLOCK             = 6
-ENOTCONN                = 9
-EALREADY                = 10
-EINVAL                  = 11
-EMSGSIZE                = 12
-ENOMEM                  = 18
-EADDRINUSE              = 20
-EADDRNOTAVAIL           = 21
-ECONNRESET              = 52
-ECONNABORTED            = 53
-EISCONN                 = 56
-ETIMEDOUT               = 60
-ECONNREFUSED            = 61
-
 ; Api protocol numbers
 API_ETH                 = 0
 API_IPv4                = 1
