@@ -36,6 +36,7 @@ include '../../../macros.inc'
 purge section,mov,add,sub
 include '../../../debug-fdo.inc'
 
+include '../../../KOSfuncs.inc'
 include '../../../network.inc'
 include 'http.inc'
 

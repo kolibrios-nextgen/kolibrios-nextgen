@@ -7,6 +7,7 @@ include '../../../proc32.inc'
 include '../../../macros.inc'
 purge section,mov,add,sub
 
+include '../../../KOSfuncs.inc'
 include '../../../network.inc'
 
 section '.flat' code readable align 16
