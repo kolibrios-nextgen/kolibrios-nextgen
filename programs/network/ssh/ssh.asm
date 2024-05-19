@@ -48,6 +48,7 @@ purge mov,add,sub
 include '../../proc32.inc'
 include '../../dll.inc'
 include '../../debug-fdo.inc'
+include '../../KOSfuncs.inc'
 include '../../network.inc'
 include '../../develop/libraries/libcrash/libcrash.inc'
 
