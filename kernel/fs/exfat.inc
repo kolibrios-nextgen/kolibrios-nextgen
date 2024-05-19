@@ -1188,7 +1188,7 @@ exFAT_ReadFile:
 
 .endOfFile:
 ; DEBUGF  1, "K : exFAT_ReadFile.endOfFile \n"
-        push    ERROR_END_OF_FILE
+        push    EEOF
 .ret:
         call    exFAT_unlock
         pop     eax
@@ -1532,7 +1532,7 @@ exFAT_ReadFile:
 
 .fileEnd:
 ; DEBUGF  1, "K : exFAT_ReadFile.fileEnd \n"
-        mov     byte [esp], ERROR_END_OF_FILE
+        mov     byte [esp], EEOF
         jmp     .done
 
 .noaccess4:
@@ -1542,7 +1542,7 @@ exFAT_ReadFile:
 
 .fileEnd2:
 ; DEBUGF  1, "K : exFAT_ReadFile.fileEnd2 \n"
-        mov     byte [esp], ERROR_END_OF_FILE
+        mov     byte [esp], EEOF
 @@:
         inc     esi
         xor     ecx, ecx
@@ -1884,8 +1884,8 @@ exFAT_ReadFolder:
 ; DEBUGF  1, "K : exFAT_ReadFolder.done ECX: %x\n", ecx
         dec     ecx
         js      @f
-; DEBUGF  1, "K : exFAT_ReadFolder.ERROR_END_OF_FILE \n"
-        mov     byte [esp], ERROR_END_OF_FILE
+; DEBUGF  1, "K : exFAT_ReadFolder.EEOF \n"
+        mov     byte [esp], EEOF
 @@:
         mov     ebx, [edx+4]
 ;------------------------------------------------------------------------------
@@ -2179,7 +2179,7 @@ exFAT_Delete:
 .error_fat:
 ; DEBUGF  1, "K : exFAT_Delete.error_fat:\n"
         popad
-        push    ERROR_BAD_FS
+        push    EBADFS
         jmp     .ret
 
 .notempty:

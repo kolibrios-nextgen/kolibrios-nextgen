@@ -16,39 +16,43 @@ D32     =  01000000b      ; 32bit segment
 G32     =  10000000b      ; page gran
 
 ;;;;;;;;;;;; KolibriOS-NG error codes ;;;;;;;;;;
-;; ERROR_* errors are specific to KolibriOS-NG
 
-ERROR_SUCCESS            = 0  ; no error
-ENOTSUP                  = 2  ; operation not supported
-ERROR_UNKNOWN_FS         = 3  ; unknown file system
-ENOENT                   = 5  ; no such file or directory
-ERROR_END_OF_FILE        = 6  ; end of file (EOF)
-EFAULT                   = 7  ; bad address / pointer lies outside of application memory
-ENOSPC                   = 8  ; no space left on device / disk is full
-ERROR_BAD_FS             = 9  ; corrupted file system
-EACCES                   = 10 ; access denied
-EIO                      = 11 ; input/output error (device error)
-EMSGSIZE                 = 12 ; message too long
-EBADF                    = 13 ; bad file descriptor
-EPIPE                    = 14 ; broken pipe
-EALREADY                 = 15 ; connection already in progress
-EADDRINUSE               = 20 ; address already in use
-EADDRNOTAVAIL            = 21 ; address not available
-ENFILE                   = 23 ; too many open files in system
-ENOMEM                   = 30 ; not enough memory
-ENOEXEC                  = 31 ; executable file format error
-ERROR_TOO_MANY_PROCESSES = 32 ; too many processes
-EINVAL                   = 33 ; invalid argument
-ENOBUFS                  = 40 ; no buffer space available
-EINPROGRESS              = 41 ; operation in progress
-EOPNOTSUPP               = 42 ; operation not supported on socket 
-EWOULDBLOCK              = 43 ; operation would block
-ENOTCONN                 = 44 ; the socket is not connected
-ECONNRESET               = 52 ; connection reset 
-ECONNABORTED             = 53 ; connection aborted
-EISCONN                  = 56 ; socket is connected
-ETIMEDOUT                = 60 ; connection timed out
-ECONNREFUSED             = 61 ; connection refused
+; KolibriOS-NG specific error codes:
+
+ENOERR  = 0  ; no error
+EUNKFS  = 3  ; unknown file system
+EEOF    = 6  ; end of file (EOF)
+EBADFS  = 9  ; corrupted file system
+EMPROCS = 32 ; too many processes
+
+; POSIX error codes:
+
+ENOTSUP         = 2  ; operation not supported
+ENOENT          = 5  ; no such file or directory
+EFAULT          = 7  ; bad address / pointer lies outside of application memory
+ENOSPC          = 8  ; no space left on device / disk is full
+EACCES          = 10 ; access denied
+EIO             = 11 ; input/output error (device error)
+EMSGSIZE        = 12 ; message too long
+EBADF           = 13 ; bad file descriptor
+EPIPE           = 14 ; broken pipe
+EALREADY        = 15 ; connection already in progress
+EADDRINUSE      = 20 ; address already in use
+EADDRNOTAVAIL   = 21 ; address not available
+ENFILE          = 23 ; too many open files in system
+ENOMEM          = 30 ; not enough memory
+ENOEXEC         = 31 ; executable file format error
+EINVAL          = 33 ; invalid argument
+ENOBUFS         = 40 ; no buffer space available
+EINPROGRESS     = 41 ; operation in progress
+EOPNOTSUPP      = 42 ; operation not supported on socket 
+EWOULDBLOCK     = 43 ; operation would block
+ENOTCONN        = 44 ; the socket is not connected
+ECONNRESET      = 52 ; connection reset 
+ECONNABORTED    = 53 ; connection aborted
+EISCONN         = 56 ; socket is connected
+ETIMEDOUT       = 60 ; connection timed out
+ECONNREFUSED    = 61 ; connection refused
 
 ;;;;;;;;;;;;cpu_caps flags;;;;;;;;;;;;;;;;
 

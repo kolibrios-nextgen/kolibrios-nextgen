@@ -516,7 +516,7 @@ proc xfs_read_inode uses ebx, _inode_lo, _inode_hi, _buffer
 
         cmp     [ebx+xfs_inode.di_core.di_magic], XFS_DINODE_MAGIC
         jz      .quit
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
 .quit:
         mov     edx, ebx
 .error:
@@ -647,7 +647,7 @@ proc xfs._.readdir_block _literal_area, _out_buf
         jnz     .error
         mov     eax, [ebp+XFS.dir_block_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         mov     eax, [ebp+XFS.dirblocksize]
         movbe   ecx, [ebx+eax-sizeof.xfs_dir2_block_tail+xfs_dir2_block_tail.stale]
@@ -661,7 +661,7 @@ proc xfs._.readdir_block _literal_area, _out_buf
         mov     [_out_buf], edx
         lea     edi, [_out_buf]
 .next:
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
         cmp     [ebp+XFS.requested_cnt], 0
         jz      .quit
         cmp     [ebp+XFS.entries_left_in_dir], 0
@@ -767,7 +767,7 @@ proc xfs._.dir_entry_skip_read uses esi edi, _arg
         add     ebx, [ebp+XFS.cur_dirblock]
         dec     [ebp+XFS.entries_left_in_dir]
 .quit:
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
         cmp     esp, esp
 .error:
         ret
@@ -778,14 +778,14 @@ proc xfs._.dir_btree_skip_read uses ebx ecx edx esi edi, _cur_dirblock, _offset_
         mov     ebx, [_cur_dirblock]
         mov     eax, [ebp+XFS.dir_data_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         mov     eax, ebx
         add     eax, [ebp+XFS.dirblocksize]
         mov     [ebp+XFS.max_dirblockaddr], eax
         add     ebx, [ebp+XFS.dir_block_size]
 .next:
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
         cmp     [ebp+XFS.requested_cnt], 0
         jz      .quit
         cmp     [ebp+XFS.entries_left_in_dir], 0
@@ -932,7 +932,7 @@ proc xfs._.readdir uses ebx esi edi, _start_number, _entries_to_read, _dst, _src
         jmp     .quit
 @@:
         cmp     eax, XFS_DINODE_FMT_EXTENTS
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         call    xfs._.get_last_dirblock
         test    eax, eax
@@ -1019,7 +1019,7 @@ proc xfs._.lookup_block uses esi, _name, _len
         jnz     .error
         mov     eax, [ebp+XFS.dir_block_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         stdcall xfs_hashname, [_name+4], [_len]
         add     ebx, [ebp+XFS.dirblocksize]
@@ -1081,7 +1081,7 @@ proc xfs._.get_inode_by_addr uses ebx esi edi, _inode_buf
         mov     ebx, [ebp+XFS.cur_dirblock]
         mov     eax, [ebp+XFS.dir_data_magic]
         cmp     [ebx+xfs_dir2_block.hdr.magic], eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         movbe   edx, [ebx+esi+xfs_dir2_data_entry.inumber.lo]
         movbe   eax, [ebx+esi+xfs_dir2_data_entry.inumber.hi]
@@ -1106,7 +1106,7 @@ proc xfs._.lookup_leaf uses ebx esi edi, _name, _len
         mov     ebx, [ebp+XFS.cur_dirblock]
         movzx   eax, [ebp+XFS.dir_leaf1_magic]
         cmp     [ebx+xfs_dir2_leaf.hdr.info.magic], ax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         stdcall xfs_hashname, [_name+4], [_len]
         cmp     [ebp+XFS.version], 5
@@ -1159,7 +1159,7 @@ endl
         movzx   eax, [ebp+XFS.dir_leafn_magic]
         cmp     [ebx+xfs_dir2_leaf.hdr.info.magic], ax
         jz      .leaf
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jmp     .error
 .node:
         cmp     [ebp+XFS.version], 5
@@ -1281,7 +1281,7 @@ proc xfs._.get_inode_short uses esi, _inode:qword, _len, _name
         mov     edx, dword[_inode+DQ.hi]
         stdcall xfs_read_inode, eax, edx, [ebp+XFS.cur_inode]
         test    eax, eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         ; switch directory ondisk format
         mov     ebx, edx
@@ -1370,7 +1370,7 @@ proc xfs_ReadFolder uses esi edi
         mov     ecx, [ebx+f70s1arg.count]
         cmp     [edx+bdfe_hdr.read_cnt], ecx
         jz      .quit
-        movi    eax, ERROR_END_OF_FILE
+        movi    eax, EEOF
 .quit:
         mov     ebx, [edx+bdfe_hdr.read_cnt]
 
@@ -1456,7 +1456,7 @@ proc xfs_get_inode_info uses ebx esi edi, _src, _dst
         lea     ecx, [esi+xfs_inode.di_core.di_mtime]
         call    [ebp+XFS.conv_time_to_kos_epoch]
 
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
         cmp     esp, esp
         ret
 endp
@@ -1558,7 +1558,7 @@ proc xfs_GetFileInfo uses ecx edx esi edi
         jnz     .error
         stdcall xfs_read_inode, eax, edx, [ebp+XFS.cur_inode]
         test    eax, eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         stdcall xfs_get_inode_info, edx, [ebx+f70s5arg.buf]
 .quit:
@@ -1717,7 +1717,7 @@ proc xfs._.file.read_extent uses ebx ecx edx, _callback, _callback_data
 .quit:
         mov     esi, [ebp+XFS.extent.br_startoff.lo]
         mov     edi, [ebp+XFS.extent.br_startoff.hi]
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
         cmp     esp, esp
         ret
 endp
@@ -1751,7 +1751,7 @@ endl
         jnz     .error
         stdcall xfs_read_inode, eax, edx, [ebp+XFS.cur_inode]
         test    eax, eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         mov     [ebp+XFS.cur_inode_save], edx
         mov     ebx, edx
@@ -1785,14 +1785,14 @@ endl
 
         sub     ecx, [ebp+XFS.file_offset.lo]
         sbb     edx, [ebp+XFS.file_offset.hi]
-        movi    eax, ERROR_END_OF_FILE
+        movi    eax, EEOF
         jb      .error
         mov     [ebp+XFS.eof], 0
         test    edx, edx
         jnz     @f
         cmp     ecx, [ebp+XFS.bytes_to_read]
         jae     @f
-        mov     [ebp+XFS.eof], ERROR_END_OF_FILE
+        mov     [ebp+XFS.eof], EEOF
         mov     [ebp+XFS.bytes_to_read], ecx
 @@:
 
@@ -1888,7 +1888,7 @@ proc xfs._.leafn_calc_entries uses ebx ecx edx esi edi, _cur_dirblock, _offset_l
         sub     eax, ecx
         add     [ebp+XFS.entries_read], eax
 .quit:
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
         cmp     esp, esp
         ret
 endp
@@ -1988,7 +1988,7 @@ proc xfs._.walk_btree uses ebx esi edi, _ptr, _size, _callback_extent, _callback
         mov     ebx, [ebp+XFS.cur_block]
         mov     eax, [ebp+XFS.bmap_magic]
         cmp     [ebx+xfs_bmbt_block.bb_magic], eax
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jnz     .error
         movzx   ecx, [ebx+xfs_bmbt_block.bb_numrecs]
         xchg    cl, ch
@@ -2141,7 +2141,7 @@ proc xfs._.walk_extent_list uses ebx esi edi, _count, _ptr, _callback_extent, _c
         js      .quit
         jmp     .next_extent
 .quit:
-        movi    eax, ERROR_SUCCESS
+        movi    eax, ENOERR
 .error:
         test    eax, eax
         ret

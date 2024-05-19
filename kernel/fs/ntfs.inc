@@ -1416,7 +1416,7 @@ ntfs_ReadFile:
         ret
 
 .eof:
-        push    ERROR_END_OF_FILE
+        push    EEOF
         jmp     .ret
 
 ;----------------------------------------------------------------
@@ -1601,7 +1601,7 @@ ntfs_ReadFolder:
         xor     eax, eax
         dec     ecx
         js      @f
-        mov     al, ERROR_END_OF_FILE
+        mov     al, EEOF
 @@:
         push    eax
         call    ntfs_unlock
@@ -2112,7 +2112,7 @@ ntfs_CreateFile:
 .refresh:
         mov     [ebp+NTFS.cur_size], 0
         call    ntfs_read_attr.continue
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jc      ntfsErrorPop3
         mov     edx, [ebp+NTFS.LastRead]
 @@:
@@ -2295,7 +2295,7 @@ ntfs_CreateFile:
         mov     [ebp+NTFS.cur_size], 0
         call    ntfs_read_attr.continue
         pop     [ebp+NTFS.cur_size]
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jc      ntfsErrorPop5
         pop     eax edi
 @@:         ; move index to the branch node
@@ -2923,7 +2923,7 @@ resizeAttribute:
         ret
 
 .err3:
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         add     esp, 20
         stc
         ret
@@ -4131,7 +4131,7 @@ ntfsDenied:
         push    EACCES
         jmp     ntfsOut
 ntfsFail:
-        push    ERROR_BAD_FS
+        push    EBADFS
         jmp     ntfsOut
 ntfsDiskFull:
         push    ENOSPC

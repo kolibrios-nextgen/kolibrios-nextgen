@@ -674,7 +674,7 @@ extfsGetExtent:
         jmp     .extentTreeSearch
 
 .fail:
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jmp     .fail2
 
 .leaf_block:
@@ -686,7 +686,7 @@ extfsGetExtent:
         dec     ebx
         jnz     .leaf_block
 .noBlock:
-        movi    eax, ERROR_END_OF_FILE
+        movi    eax, EEOF
 .fail2:
         pop     esi edx ebx
         stc
@@ -880,7 +880,7 @@ indirectBlockAlloc:
         jnz     @f
         pop     ecx ebx edi
 .err:
-        mov     al, ERROR_BAD_FS
+        mov     al, EBADFS
         stc
         ret
 
@@ -951,7 +951,7 @@ doublyIndirectBlockAlloc:
         jnz     @f
         pop     ecx edi
 .err:
-        mov     al, ERROR_BAD_FS
+        mov     al, EBADFS
         stc
         ret
 
@@ -1130,7 +1130,7 @@ extfsExtendFile:
         jz      @f
         cmp     dword[edi-4], 0
         jnz     @f
-        mov     al, ERROR_BAD_FS
+        mov     al, EBADFS
 .errFree:
         push    ecx eax
         stdcall kernel_free, esi
@@ -1148,7 +1148,7 @@ extfsExtendFile:
 
 .newBlock:
         pop     ebx ecx
-        mov     al, ERROR_BAD_FS
+        mov     al, EBADFS
         test    edx, edx
         jnz     .errFree
         mov     [ebp+EXTFS.inodeBuffer.tripleAddress], ebx
@@ -1555,7 +1555,7 @@ unlinkInode:
 
 .fail:
         pop     edi
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         stc
 .fail_loop:
         pop     edi
@@ -1923,7 +1923,7 @@ ext_ReadFolder:
         ret
 
 .error_bad_len:
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
 .error_read_subinode:
 .error_get_block:
         lea     esp, [edi+32]
@@ -1935,7 +1935,7 @@ ext_ReadFolder:
         ret
 
 .error_empty_dir:
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         jmp     .error_ret
 
 .error_not_found:
@@ -1952,7 +1952,7 @@ ext_ReadFile:
         mov     byte [esp], EACCES
         test    [esi+INODE.accessMode], FLAG_FILE
         jz      .ret    ; not a file
-        mov     byte [esp], ERROR_END_OF_FILE
+        mov     byte [esp], EEOF
         mov     eax, [esi+INODE.fileSize]
         mov     edx, [esi+INODE.fileSizeHigh]
         sub     eax, [ebx+4]
@@ -2226,7 +2226,7 @@ ext_Delete:
 
 .empty:
         pop     ecx ecx
-        cmp     eax, ERROR_END_OF_FILE
+        cmp     eax, EEOF
         jnz     .error
         push    ecx
 .file:

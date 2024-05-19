@@ -168,7 +168,7 @@ fs_CdRead:
         cmp     dword [ebx+4], 0
         jz      @f
         xor     ebx, ebx
-        movi    eax, ERROR_END_OF_FILE
+        movi    eax, EEOF
         ret
 
 .notFound:
@@ -196,7 +196,7 @@ fs_CdRead:
         jae     @f
         mov     ecx, eax
         pop     eax
-        push    ERROR_END_OF_FILE
+        push    EEOF
 @@:
         mov     eax, [edi+2]
         mov     [CDSectorAddress], eax
@@ -223,7 +223,7 @@ fs_CdRead:
 
 .eof:
         pop     eax
-        push    ERROR_END_OF_FILE
+        push    EEOF
 .done:
         mov     ebx, edx
         pop     eax edx ecx
@@ -287,7 +287,7 @@ fs_CdReadFolder:
         xor     eax, eax
         dec     ecx
         js      @f
-        mov     al, ERROR_END_OF_FILE
+        mov     al, EEOF
 @@:
         pop     ecx edi
         mov     ebx, [edx+4]
