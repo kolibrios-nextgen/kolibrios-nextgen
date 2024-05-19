@@ -1,5 +1,9 @@
+; SPDX-License-Identifier: GPL-2.0-only
+; SPDX-FileCopyrightText: 2015-2021 KolibriOS team
+; SPDX-FileCopyrightText: 2024 KolibriOS-NG team
 
-; KolibriOS system functions:
+;;;;;;;;;;;; KolibriOS-NG system functions ;;;;;;;;;;;;
+
 SF_TERMINATE_PROCESS=-1
 SF_CREATE_WINDOW=0      ; define and draw the window
 SF_PUT_PIXEL=1          ; draw pixel to the window
@@ -284,15 +288,41 @@ SF_FUTEX=77
   SSF_WAIT=2
   SSF_WAKE=3
 
-; File system errors:
-FSERR_SUCCESS=0
-FSERR_UNSUPPORTED=2
-FSERR_UNKNOWN=3
-FSERR_FILE_NOT_FOUND=5
-FSERR_END_OF_FILE=6
-FSERR_INVALID_BUFFER=7
-FSERR_DISK_FULL=8
-FSERR_FAIL=9
-FSERR_ACCESS_DENIED=10
-FSERR_DEVICE_FAIL=11
-FSERR_OUT_OF_MEMORY=12
+;;;;;;;;;;;; KolibriOS-NG error codes ;;;;;;;;;;
+
+; KolibriOS-NG specific error codes:
+
+ENOERR  = 0  ; no error
+EUNKFS  = 3  ; unknown file system
+EEOF    = 6  ; end of file (EOF)
+EBADFS  = 9  ; corrupted file system
+EMPROCS = 32 ; too many processes
+
+; POSIX error codes:
+
+ENOTSUP         = 2  ; operation not supported
+ENOENT          = 5  ; no such file or directory
+EFAULT          = 7  ; bad address / pointer lies outside of application memory
+ENOSPC          = 8  ; no space left on device / disk is full
+EACCES          = 10 ; access denied
+EIO             = 11 ; input/output error (device error)
+EMSGSIZE        = 12 ; message too long
+EBADF           = 13 ; bad file descriptor
+EPIPE           = 14 ; broken pipe
+EALREADY        = 15 ; connection already in progress
+EADDRINUSE      = 20 ; address already in use
+EADDRNOTAVAIL   = 21 ; address not available
+ENFILE          = 23 ; too many open files in system
+ENOMEM          = 30 ; not enough memory
+ENOEXEC         = 31 ; executable file format error
+EINVAL          = 33 ; invalid argument
+ENOBUFS         = 40 ; no buffer space available
+EINPROGRESS     = 41 ; operation in progress
+EOPNOTSUPP      = 42 ; operation not supported on socket 
+EWOULDBLOCK     = 43 ; operation would block
+ENOTCONN        = 44 ; the socket is not connected
+ECONNRESET      = 52 ; connection reset 
+ECONNABORTED    = 53 ; connection aborted
+EISCONN         = 56 ; socket is connected
+ETIMEDOUT       = 60 ; connection timed out
+ECONNREFUSED    = 61 ; connection refused
