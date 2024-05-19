@@ -1592,7 +1592,7 @@ dyndisk_handler:
         ret
 
 .unsupported:
-        movi    eax, ERROR_UNKNOWN_FS
+        movi    eax, EUNKFS
         cmp     edi, default_fs_functions
         jz      .cleanup
         movi    eax, ENOTSUP

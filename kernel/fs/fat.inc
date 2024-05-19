@@ -1323,7 +1323,7 @@ fat_Read:
         jmp     .ret
 
 .endOfFile:
-        push    ERROR_END_OF_FILE
+        push    EEOF
 .ret:
         call    fat_unlock
         pop     eax
@@ -1448,7 +1448,7 @@ fat_Read:
         ret
 
 .fileEnd:
-        mov     byte [esp], ERROR_END_OF_FILE
+        mov     byte [esp], EEOF
         jmp     .done
 
 .noaccess4:
@@ -1456,7 +1456,7 @@ fat_Read:
         jmp     @f
 
 .fileEnd2:
-        mov     byte [esp], ERROR_END_OF_FILE
+        mov     byte [esp], EEOF
 @@:
         inc     esi
         xor     ecx, ecx
@@ -1608,7 +1608,7 @@ fat_ReadFolder:
         pushd   0
         dec     ecx
         js      @f
-        mov     byte [esp], ERROR_END_OF_FILE
+        mov     byte [esp], EEOF
 @@:
         mov     ebx, [edx+4]
 .ret:
@@ -1910,7 +1910,7 @@ fat_CreateFile:
         jz      .noAccess   ; file
         mov     edx, [edi+20-2]
         mov     dx, [edi+26]
-        movi    eax, ERROR_BAD_FS
+        movi    eax, EBADFS
         cmp     edx, 2
         jb      .ret1
 .pushnotroot:
@@ -2427,7 +2427,7 @@ fat_Write:
         jmp     @b
 
 .eof:
-        push    ERROR_END_OF_FILE
+        push    EEOF
         xor     ebx, ebx
         jmp     @b
 
@@ -2438,7 +2438,7 @@ fat_Write:
         jmp     .ret
 
 .fat_err:
-        mov     byte [esp+8], ERROR_BAD_FS
+        mov     byte [esp+8], EBADFS
         jmp     .ret
 
 .length_ok:
@@ -2572,7 +2572,7 @@ hd_extend_file.zero_size:
 ; extends file on hd to given size (new data area is undefined)
 ; in: edi->direntry, ecx=new size
 ; out: CF=0 => OK, eax=0
-;      CF=1 => error, eax=code (ERROR_BAD_FS or ENOSPC or EIO)
+;      CF=1 => error, eax=code (EBADFS or ENOSPC or EIO)
 hd_extend_file:
         push    esi
         mov     esi, [ebp+FAT.SECTORS_PER_CLUSTER]
@@ -2604,7 +2604,7 @@ hd_extend_file:
         jb      .last_loop
 .fat_err:
         pop     ecx esi
-        push    ERROR_BAD_FS
+        push    EBADFS
         jmp     .ret_err
 .last_found:
         push    eax
@@ -2702,7 +2702,7 @@ fat_SetFileEnd:
         jmp     .ret
 
 .endOfFile:
-        push    ERROR_END_OF_FILE
+        push    EEOF
         jmp     .ret
 
 .errorDevice:
@@ -2802,13 +2802,13 @@ fat_SetFileEnd:
 
 .error_fat:
         pop     eax
-        mov     byte [esp], ERROR_BAD_FS
+        mov     byte [esp], EBADFS
         jmp     .pop_ret
 
 .error_fat2:
         pop     eax ecx eax
         call    update_disk
-        push    ERROR_BAD_FS
+        push    EBADFS
         jmp     .ret
 
 .truncate:
@@ -3051,7 +3051,7 @@ fat_Delete:
 
 .error_fat:
         popad
-        push    ERROR_BAD_FS
+        push    EBADFS
         jmp     .ret
 
 .notempty:

@@ -111,7 +111,7 @@ proc fs_execute
 
         call    lock_application_table
         call    alloc_thread_slot   ; create a slot for new thread
-        mov     esi, -ERROR_TOO_MANY_PROCESSES
+        mov     esi, -EMPROCS
         test    eax, eax
         jz      .err_0
 

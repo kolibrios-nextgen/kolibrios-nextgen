@@ -419,7 +419,7 @@ file_system_lfn:
         xor     eax, eax
         dec     ebp
         js      @f
-        mov     al, ERROR_END_OF_FILE
+        mov     al, EEOF
 @@:
         mov     [image_of_eax], eax
         mov     [image_of_ebx], ebx
@@ -551,7 +551,7 @@ file_system_lfn:
         xor     eax, eax
         dec     ebp
         js      @f
-        mov     al, ERROR_END_OF_FILE
+        mov     al, EEOF
 @@:
         mov     [image_of_eax], eax
         mov     [image_of_ebx], ebx
