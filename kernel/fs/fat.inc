@@ -17,7 +17,8 @@ iglobal
 align 4
 fat_user_functions:
         dd      fat_free
-        dd      (fat_user_functions_end - fat_user_functions - 4) / 4
+        dd      (fat_user_functions_end - .first) / 4
+.first:
         dd      fat_Read
         dd      fat_ReadFolder
         dd      fat_CreateFile

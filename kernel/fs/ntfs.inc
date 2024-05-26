@@ -17,7 +17,8 @@ iglobal
 align 4
 ntfs_user_functions:
         dd      ntfs_free
-        dd      (ntfs_user_functions_end - ntfs_user_functions - 4) / 4
+        dd      (ntfs_user_functions_end - .first) / 4
+.first:
         dd      ntfs_ReadFile
         dd      ntfs_ReadFolder
         dd      ntfs_CreateFile
