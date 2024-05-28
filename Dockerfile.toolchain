@@ -31,10 +31,24 @@ RUN \
 
 # Get precompiled parts of toolchain
 RUN \
-    wget "http://board.kolibrios.org/download/file.php?id=9919&sid=bc8412934004a60f831b1b92eae0ad34" -O install_kgcc && \
-    chmod +x ./install_kgcc && \
-    ./install_kgcc && \
-    wget "https://websvn.kolibrios.org/filedetails.php?repname=Kolibri+OS&path=%2Fprograms%2Fdevelop%2Fktcc%2Ftrunk%2Fbin%2Fkos32-tcc" -O /home/autobuild/tools/win32/bin/kos32-tcc && \
+    mkdir -p ~/autobuild/tools && \
+    ln -sf  ~/autobuild /home/autobuild && \
+    wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/x86_64-linux-kos32-5.4.0.7z -O ~/autobuild/tools/kos32-toolchain.7z && \
+    cd ~/autobuild/tools/ && \
+    7z x -y kos32-toolchain.7z && \
+    rm -rf kos32-toolchain.7z && \
+    cd /src && \
+    cd /tmp && \
+    wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/libisl.so.10.2.2.7z -O /tmp/libisl.so.10.2.2.7z && \
+    7z x -y libisl.so.10.2.2.7z && \
+    mkdir -p /usr/lib/x86_64-linux-gnu/ && \
+    mv /tmp/libisl.so.10.2.2 /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 /usr/lib/x86_64-linux-gnu/libisl.so.10 && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 /usr/lib/libisl.so.10 && \
+    chmod go-w /usr/lib/x86_64-linux-gnu/libisl.so.10  && \
+    chmod go-w /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 && \
+    cd /src && \
+    wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/kos32-tcc -O /home/autobuild/tools/win32/bin/kos32-tcc && \
     chmod +x /home/autobuild/tools/win32/bin/kos32-tcc
 
 # Compile parts of toolchain

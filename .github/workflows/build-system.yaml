@@ -34,15 +34,43 @@ jobs:
 
       - name: Install toolchain
         run: |
-          wget "http://board.kolibrios.org/download/file.php?id=9919&sid=bc8412934004a60f831b1b92eae0ad34" -O install_kgcc
-          chmod +x ./install_kgcc
-          ./install_kgcc
+          # Prepare folders
+          mkdir -p ~/autobuild/tools
+          sudo ln -sf  ~/autobuild /home/autobuild
 
+          # Get kos32-gcc toolchain
+          wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/x86_64-linux-kos32-5.4.0.7z -O ~/autobuild/tools/kos32-toolchain.7z
+          cd ~/autobuild/tools/
+          7z x -y kos32-toolchain.7z
+          cd ${{ github.workspace }}
+
+          # Get libisl
+          cd /tmp
+          sudo wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/libisl.so.10.2.2.7z -O /tmp/libisl.so.10.2.2.7z
+          sudo 7z x -y libisl.so.10.2.2.7z
+          sudo mkdir -p /usr/lib/x86_64-linux-gnu/
+          sudo mv /tmp/libisl.so.10.2.2 /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2
+          sudo ln -sf /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 /usr/lib/x86_64-linux-gnu/libisl.so.10
+          sudo ln -sf /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 /usr/lib/libisl.so.10
+          sudo chmod go-w /usr/lib/x86_64-linux-gnu/libisl.so.10 
+          sudo chmod go-w /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2
+          cd ${{ github.workspace }}
+
+          # Fix libmpfr
+          sudo ln -sf /usr/lib/x86_64-linux-gnu/libmpfr.so.6 /usr/lib/x86_64-linux-gnu/libmpfr.so.4
+          sudo ln -sf /usr/lib/libmpfr.so.6 /usr/lib/libmpfr.so.4
+
+          # Configure shell
+          export PATH=$PATH:/home/autobuild/tools/win32/bin
+          echo 'export PATH=$PATH:/home/autobuild/tools/win32/bin' >> ~/.bashrc
+
+          # Configure C--
           echo 'exec ${{ github.workspace }}/programs/cmm/c--/c--.elf $*' > /home/autobuild/tools/win32/bin/c--
           chmod +x ${{ github.workspace }}/programs/cmm/c--/c--.elf
           chmod +x /home/autobuild/tools/win32/bin/c--
 
-          wget "https://websvn.kolibrios.org/filedetails.php?repname=Kolibri+OS&path=%2Fprograms%2Fdevelop%2Fktcc%2Ftrunk%2Fbin%2Fkos32-tcc" -O /home/autobuild/tools/win32/bin/kos32-tcc
+          # Get kos32-tcc
+          wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/kos32-tcc -O /home/autobuild/tools/win32/bin/kos32-tcc
           chmod +x /home/autobuild/tools/win32/bin/kos32-tcc
 
       - name: Compile objconv
