@@ -29,9 +29,6 @@
 ### default Linux variant
 # CONFIG_TOOLCHAIN_LIBPATH=/home/autobuild/tools/win32/mingw32/lib
 
-### KolibriOS-NG version generation script
-# CONFIG_VERSION_GEN_CMD=$(ROOT)/kernel/version-gen.sh
-
 ### Optional postprocessing of binaries, where applicable.
 ### By default, no postprocessing is used.
 ### Windows variants

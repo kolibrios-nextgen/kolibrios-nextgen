@@ -3,6 +3,8 @@
 
 #!/usr/bin/env bash
 
+set -e
+
 # Build toolchain
 docker build --pull --rm -f Dockerfile.toolchain -t kolibriosng-toolchain:latest .
 
