@@ -760,18 +760,21 @@ KOSAPI void _ksys_shutdown(uint32_t shd_param)
     asm_inline("int $0x40" ::"a"(18), "b"(9), "c"(shd_param));
 }
 
-/*========= Function 18, subfunction 13 - get OS version. ========*/
+/*========= Function 18, subfunction 13 - get kernel version. ========*/
 
 #define KSYS_VER_HASH_LEN 9
 
-typedef struct {
-    uint8_t a;
-    uint8_t b;
-    uint16_t offset;
-    char hash[KSYS_VER_HASH_LEN + 1];
-} ksys_os_ver_t;
+typedef union {
+    uint32_t val;
+    struct {
+        uint8_t reserved;
+        uint8_t major;
+        uint8_t minor;
+        uint8_t patch;
+    };
+} ksys_kernel_ver_t;
 
-KOSAPI int _ksys_get_os_ver(ksys_os_ver_t *ver)
+KOSAPI int _ksys_kernel_ver(ksys_kernel_ver_t *ver)
 {
     int status;
     asm_inline(
