@@ -12,8 +12,8 @@
 ;=================================================================
 
 d80x25_bottom:
-          cp866       '║ KolibriOS НЕ ПРЕДОСТАВЛЯЕТ НИКАКИХ ГАРAНТИЙ. Подробнее смотрите в файле      ║'
-          cp866       '║ COPYING.TXT. О найденных ошибках сообщайте на http://board.kolibrios.org     ║'
+          cp866       '║ KolibriOS-NG НЕ ПРЕДОСТАВЛЯЕТ НИКАКИХ ГАРAНТИЙ. Подробнее смотрите в файле   ║'
+          cp866       '║ COPYING.TXT. Веб-страница проекта: https://github.com/kolibrios-nextgen      ║'
           line_full_bottom
 d80x25_bottom_num = 3
 

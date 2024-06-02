@@ -12,8 +12,8 @@
 ;======================================================================
 
 d80x25_bottom:
-          db       186,' KolibriOS comes with ABSOLUTELY NO WARRANTY. See file COPYING for details    ',186
-          db       186,' If you find any bugs, please report them at: http://board.kolibrios.org      ',186
+          db       186,' KolibriOS-NG comes with ABSOLUTELY NO WARRANTY. See file COPYING for details ',186
+          db       186,' Project web page: https://github.com/kolibrios-nextgen                       ',186
           line_full_bottom
 d80x25_bottom_num = 3
 
