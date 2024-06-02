@@ -1,8 +1,24 @@
 
 void get_str_kernel_version(char *str, const char *fmt) {
-    ksys_os_ver_t ver;
-    _ksys_get_os_ver(&ver);
-    sprintf(str, fmt, ver.a, ver.b, ver.offset, ver.hash);
+    ksys_kernel_ver_t ver;
+    _ksys_kernel_ver(&ver);
+    sprintf(str, fmt, ver.major, ver.minor, ver.patch);
+}
+
+char *get_str_os_version() {
+    static char str_ver[32];
+    memset(str_ver, 0, sizeof(str_ver));
+
+    ksys_ufile_t ver_file = _ksys_load_file("/sys/settings/osver");
+    if (ver_file.size == 0)
+        return "Unknown";
+
+    if (ver_file.size < sizeof(str_ver))
+        memcpy(str_ver, ver_file.data, ver_file.size);
+
+    _ksys_free(ver_file.data);
+
+    return str_ver;
 }
 
 void get_str_cpu_info(char *str) {
@@ -36,8 +52,13 @@ void get_str_cpu_info(char *str) {
 
 int cmd_ver(char param[]) {
     if (!strcmp(param, "kernel")) {
-        get_str_kernel_version(tmpstr, "  KolibriOS-NG v%d.%d-%d-g%s\n\r");
+        get_str_kernel_version(tmpstr, "  Kernel v%d.%d.%d\n\r");
         printf(tmpstr);
+        return TRUE;
+    }
+
+    if (!strcmp(param, "os")) {
+        printf("  KolibriOS-NG %s\n\r", get_str_os_version());
         return TRUE;
     }
 
