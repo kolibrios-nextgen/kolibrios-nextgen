@@ -8,6 +8,9 @@ end
 
 PROGS = "../programs"
 
+-- Generate OSVER file.
+tup.rule("git describe --tags --long | tr -d '\n' > %o", {"osver"})
+
 -- Static data that doesn't need to be compiled
 -- Files to be included in kolibri.img.
 -- The first subitem of every item is name inside kolibri.img, the second is name of local file.
@@ -61,6 +64,7 @@ img_files = {
  {"SETTINGS/SYSTEM.INI", "common/settings/system.ini"},
  {"SETTINGS/TASKBAR.INI", "common/settings/taskbar.ini"},
  {"SETTINGS/SYSTEM.ENV", "common/settings/system.env"},
+ {"SETTINGS/OSVER", "osver"},
 }
 
 -- For russian build, add russian-only files.
@@ -872,8 +876,8 @@ for i,v in ipairs(img_files) do
     -- note that .revision and .kernel.mnt must begin with .
     -- to prevent tup from tracking them
     if build_type == "rus"
-    then str='$(LANG=ru_RU.utf8 date -u +"[автосборка %d %b %Y %R, g$(git rev-parse --short HEAD)]"|iconv -f utf8 -t cp866)'
-    else str='$(date -u +"[autobuild %d %b %Y %R, g$(git rev-parse --short HEAD)]")'
+    then str='$(LANG=ru_RU.utf8 date -u +"[автосборка %d %b %Y %R, $(git describe --tag --long)]"|iconv -f utf8 -t cp866)'
+    else str='$(date -u +"[autobuild %d %b %Y %R, $(git describe --tag --long)]")'
     end
     str = string.gsub(str, "%$", "\\$") -- escape $ as \$
     str = string.gsub(str, "%%", "%%%%") -- escape % as %%
@@ -899,8 +903,8 @@ end
 
 -- generate tup rule for kolibri.iso
 if tup.getconfig("INSERT_REVISION_ID") ~= ""
-then volume_id = "KolibriOS g`git rev-parse --short HEAD`"
-else volume_id = "KolibriOS"
+then volume_id = "KolibriOS-NG `git describe --tag --long`"
+else volume_id = "KolibriOS-NG"
 end
 tup.definerule{inputs = input_deps, command =
   '^ MKISOFS kolibri.iso^ ' .. -- for tup: don't write full command to logs
