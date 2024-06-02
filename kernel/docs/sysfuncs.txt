@@ -945,7 +945,7 @@ Remarks:
   eax - SF_SYSTEM (18)
   ebx - SSF_INFO_DISC_SYS (11)
 ======================================================================
-========== Function 18, subfunction 13 - get OS version. =============
+========== Function 18, subfunction 13 - get kernel version. =========
 ======================================================================
 Parameters:
   * eax = 18 - function number
@@ -955,20 +955,16 @@ Parameters:
 Returned value:
   * function does not return value
     but if pointer in ecx is illegal, for example,
-    [ecx, ecx + 14) region intersects with kernel memory,
+    [ecx, ecx + 4) region intersects with kernel memory,
     then function returns -1
 Structure of the buffer:
-db a, b - git-tag (a.b);
-dw offset - number of commits after git-tag;
-db 'hash', 0 - a null-terminated git-hash string.
-For example for KolibriOS-NG v1.0-14-g99ffedbae:
-db 1, 0
-dw 14
-db '99ffedbae', 0
+db reserved, major, minor, patch - kernel version
+For example for KolibriOS-NG kernel v8.0.0:
+db 0, 8, 0, 0
 
 ---------------------- Constants for registers: ----------------------
   eax - SF_SYSTEM (18)
-  ebx - SSF_KERNEL_VERSION/SSF_OS_VERSION (13)
+  ebx - SSF_KERNEL_VERSION (13)
 ======================================================================
 ======= Function 18, subfunction 14 - wait for screen retrace. =======
 ======================================================================

@@ -30,7 +30,6 @@ format binary as "mnt"
 include 'macros.inc'
 include 'struct.inc'
 
-include 'ver.inc'
 
 USE_COM_IRQ     = 1      ; make irq 3 and irq 4 available for PCI devices
 VESA_1_2_VIDEO  = 0      ; enable vesa 1.2 bank switch functions
@@ -711,11 +710,6 @@ if defined debug_com_base
 end if
 
 
-;-----------------------------------------------------------------------------
-; show Git-hash of kernel on the message board
-;-----------------------------------------------------------------------------
-        mov     eax, version_inf.hash
-        DEBUGF  1, "K : kernel GIT %s\n", eax
 ;-----------------------------------------------------------------------------
 ; show CPU count on the message board
 ;-----------------------------------------------------------------------------
@@ -2396,7 +2390,7 @@ endg
 
 iglobal
 version_inf:
-VERSION_INFO
+        db 0,8,0,0
 .size = $ - version_inf
 endg
 ;------------------------------------------------------------------------------

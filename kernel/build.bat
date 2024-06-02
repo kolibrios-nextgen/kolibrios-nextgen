@@ -21,10 +21,6 @@ goto :eof
    echo Building kernel with language '%lang%' ...
    echo lang fix %lang% > lang.inc
 
-   :: FIXME: Getting the version using "git describe" 
-   :: is not yet supported on Windows
-   copy /y ver_stub.inc ver.inc
-
    fasm -m 262144 kernel.asm kernel.mnt
    fasm -m 262144 -dextended_primary_loader=1 kernel.asm kernel.mnt.ext_loader
    if not %errorlevel%==0 goto :Error_FasmFailed
@@ -33,7 +29,6 @@ goto :eof
 :Error_FasmFailed
 echo Error: fasm execution failed!
 erase lang.inc >nul 2>&1
-erase ver.inc >nul 2>&1
 echo.
 pause
 exit 1

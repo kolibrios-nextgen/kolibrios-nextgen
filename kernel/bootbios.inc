@@ -22,10 +22,10 @@ end if
 use16
 org 0
         ; struct kernel_header
-        jmp     start_of_code   ; jump
-        db      'KolibriOS-NG ' ; signature
-        BOOT_VERSION_INFO       ; version
-        dd      B32-KERNEL_BASE ; offset of the kernel's 32-bit entry point
+        jmp     start_of_code                   ; jump
+        db      'KolibriOS-NG KRN '             ; signature
+        db      'v8.0.0 ',13,10,13,10,0         ; kernel version
+        dd      B32-KERNEL_BASE                 ; offset of the kernel's 32-bit entry point
 
 include "boot/bootstr.inc"      ; language-independent boot messages
 include "boot/preboot.inc"
