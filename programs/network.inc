@@ -85,18 +85,19 @@ EAI_BADHINTS    = 12
 EAI_PROTOCOL    = 13
 EAI_OVERFLOW    = 14
 
-socket          fix 75, 0
-close           fix 75, 1
-bind            fix 75, 2
-listen          fix 75, 3
-connect         fix 75, 4
-accept          fix 75, 5
-send            fix 75, 6
-recv            fix 75, 7
-setsockopt      fix 75, 8
-getsockopt      fix 75, 9
-socketpair      fix 75, 10
+include 'KOSfuncs.inc'
 
+socket          fix SF_NETWORK_SOCKET, SSF_OPEN
+close           fix SF_NETWORK_SOCKET, SSF_CLOSE
+bind            fix SF_NETWORK_SOCKET, SSF_BIND
+listen          fix SF_NETWORK_SOCKET, SSF_LISTEN
+connect         fix SF_NETWORK_SOCKET, SSF_CONNECT
+accept          fix SF_NETWORK_SOCKET, SSF_ACCEPT
+send            fix SF_NETWORK_SOCKET, SSF_SEND
+recv            fix SF_NETWORK_SOCKET, SSF_RECEIVE
+setsockopt      fix SF_NETWORK_SOCKET, SSF_SET_OPTIONS
+getsockopt      fix SF_NETWORK_SOCKET, SSF_GET_OPTIONS
+socketpair      fix SF_NETWORK_SOCKET, SSF_SOCKET_PAIR
 
 struct  ARP_entry
         IP      dd ?
