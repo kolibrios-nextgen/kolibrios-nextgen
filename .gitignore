@@ -7,3 +7,9 @@
 data/*.img
 data/*.iso
 data/*.raw
+
+kernel/kernel.mnt
+kernel/kernel.mnt.ext_loader
+kernel/lang.inc
+kernel/ver.inc
+
