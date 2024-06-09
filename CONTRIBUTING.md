@@ -34,3 +34,8 @@ You can also help us by submitting pull requests. The process of submitting a pu
 - Waiting for passing CI/CD pipelines and code review
 
 After submitting a pull requests at least two project participants must conduct a code review, after which the changes are corrected (if it's necessary) and merged into the project
+
+## Related documents
+
+- [Branching model](./doc/branching-model.md)
+- [Commit style](./doc/commit-style.md)
