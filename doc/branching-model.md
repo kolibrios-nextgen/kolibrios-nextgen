@@ -10,7 +10,7 @@ The project uses linear history to simplify viewing and comprehension. The accep
 
 ### Standard branches
 
-Standard branch accepted in the project is the branch named `main`. Administrators and maintainers only of the project must work with this branch
+Standard branch accepted in the project is the branch named `main`. Administrators and maintainers of the project only can work with this branch
 
 ### Special branches
 
@@ -18,7 +18,7 @@ Special branch named `sync` for synchronization purposes with other forks can be
 
 ### Regular branches
 
-Regular working branches should branch from the `main` branch and should be named match the following pattern:
+Regular working branches should branch from the `main` branch and should be named matching the following pattern:
 
 ```text
 feature/name-of-branch

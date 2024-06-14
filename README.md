@@ -10,4 +10,4 @@ The KolibriOS-NG team expresses special thanks to the author of the 32-bit __Men
 
 ## License
 
-Contents of this repository licensed under terms of __GNU GPL 2.0__ unless otherwise specified. See [this](COPYING.TXT) file for details
+Contents of this repository are licensed under the terms of __GNU GPL 2.0__ unless otherwise specified. See [this](COPYING.TXT) file for details

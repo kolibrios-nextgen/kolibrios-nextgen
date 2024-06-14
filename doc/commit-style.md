@@ -4,7 +4,7 @@ Commit style accepted in __KolibriOS-NG__ project
 
 ## Overview
 
-The project has accepted commit standard for transparency and comprehension of the changes being made. The acceptable commit style are described below
+The project accepts commit standard for transparency and comprehension of the changes being made. The acceptable commit style is described below
 
 ## Naming
 
@@ -55,7 +55,7 @@ Initial commit
   - `All` - global changes
   - `Other` - unclassifiable changes
 
-  If changes are made to a specific OS component need to write name of the component separated by `/` character. For example:
+  If changes are made to a specific component, the name of the component separated by `/` character needs to be specified. For example:
 
   ```text
   Apps/shell
@@ -68,11 +68,11 @@ Merge commits are __prohibited__ in the project
 
 ### Unwanted commits
 
-Commit messages in the style like `Refactoring`/`Update files` are __unwanted__ in the project
+Commit messages like `Refactoring`/`Update files` are __unwanted__ in the project
 
 ## Signing
 
-This is not a requirement, but it is strongly recommended to sign commits. This can be done by command:
+This is not a requirement, but it is strongly recommended to sign commits. This can be done by the following command:
 
 ```sh
 git commit -s

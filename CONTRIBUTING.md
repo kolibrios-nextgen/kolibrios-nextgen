@@ -1,6 +1,6 @@
 # Contributing guide
 
-__Contributing__ guide of __KolibriOS-NG__ project
+The __KolibriOS-NG__ project __Contributing__ guide
 
 ## Overview
 
@@ -16,9 +16,9 @@ There are two main types of contributions: submitting issues about problems and 
 
 ## Issues
 
-You can help us by submitting issues to repository. At the moment there are 2 main forms of submitting an issue in the project: _bug reports_ and _feature requests_. All existing forms are provided with brief explanations
+You can help us by submitting issues to repository. At the moment there are 2 main ways of submitting an issue in the project: _bug reports_ and _feature requests_. All existing forms are provided with brief explanations
 
-- Reports are suitable if you find a __bug__ in the some part of the project and want to create a report
+- Reports are suitable if you find a __bug__ in some part of the project and want to create a report
 - Also there is a possibility submit a __feature request__ if it seems to you that the project lacks any feature
 
 ## Pull requests
@@ -30,10 +30,10 @@ You can also help us by submitting pull requests. The process of submitting a pu
 - Create a branch with name in the appropriate style
 - Make and test the changes
 - Create commits according to the accepted style
-- Create and submit pull request
-- Waiting for passing CI/CD pipelines and code review
+- Create and submit a pull request
+- Wait for CI/CD pipelines and code review to pass 
 
-After submitting a pull requests at least two project participants must conduct a code review, after which the changes are corrected (if it's necessary) and merged into the project
+When a pull request is submitted, at least two project participants must conduct a code review, after which the changes are corrected (if it's necessary) and merged into the project
 
 ## Related documents
 

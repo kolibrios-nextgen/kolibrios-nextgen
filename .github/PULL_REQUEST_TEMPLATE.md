@@ -1,7 +1,7 @@
 ### Proposed changes
 
 <!--
-Please insert below the list of changes in this pull request. For example:
+Please insert the list of changes below. For example:
 
 - Added some functionality
 - Deleted old things
@@ -13,7 +13,7 @@ Please insert below the list of changes in this pull request. For example:
 ### Associated issues
 
 <!--
-If this pull request is associated to any issue, then put its number here
+If this pull request is associated with any issue, then put its number here
 please. For example:
 
 - #8
@@ -29,7 +29,7 @@ Please write 'x' letter in '[]' to agree. For example:
 - [x] Manual testing
 -->
 
-- [] Manual testing
+- [ ] Manual testing
 
 ### Agreements
 
@@ -39,5 +39,5 @@ Please write 'x' letter in '[]' to agree. For example:
 - [x] I agree to follow this project's [__Contributing Guidelines__](../../CONTRIBUTING.md)
 -->
 
-- [] I agree to follow this project's [__Contributing Guidelines__](../../CONTRIBUTING.md)
-- [] I agree to follow this project's [__Code of Conduct__](../../CODE_OF_CONDUCT.md)
+- [ ] I agree to follow this project's [__Contributing Guidelines__](../../CONTRIBUTING.md)
+- [ ] I agree to follow this project's [__Code of Conduct__](../../CODE_OF_CONDUCT.md)

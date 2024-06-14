@@ -4,11 +4,11 @@ __Code of Conduct__ of __KolibriOS-NG__ project
 
 ## Purpose
 
-A primary goal of our community is to be inclusive to the largest number of contributors, with the most varied and diverse backgrounds possible. As such, we are committed to providing a friendly, safe and welcoming environment for all, regardless of gender, ability, ethnicity, socioeconomic status, and religion (or lack thereof)
+A primary goal of our community is to be inclusive of a large number of contributors, with the most varied and diverse backgrounds possible. As such, we are committed to providing a friendly, safe and welcoming environment for all, regardless of gender, ability, ethnicity, socioeconomic status, and religion (or lack thereof)
 
 This code of conduct outlines our expectations for all those who participate in our community, as well as the consequences for unacceptable behavior
 
-We invite all those who participate in our community to help us create safe and positive experiences for everyone
+We invite all those who participate in our community to help us create safe and positive experience for everyone
 
 ## Expected Behavior
 
@@ -29,7 +29,7 @@ The following behaviors are considered harassment and are unacceptable within ou
 - Posting or displaying sexually explicit material
 - Personal insults
 - Deliberate intimidation, stalking or following
-- Advocating for, or encouraging, any of the above behavior
+- Advocating for, or encouraging, any of the above behaviors
 - Sustained disruption of community events, including talks and presentations
 
 ## Reporting Guidelines
