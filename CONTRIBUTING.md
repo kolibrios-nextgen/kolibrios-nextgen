@@ -31,7 +31,7 @@ You can also help us by submitting pull requests. The process of submitting a pu
 - Make and test the changes
 - Create commits according to the accepted style
 - Create and submit a pull request
-- Wait for CI/CD pipelines and code review to pass 
+- Wait for CI/CD pipelines and code review to pass
 
 When a pull request is submitted, at least two project participants must conduct a code review, after which the changes are corrected (if it's necessary) and merged into the project
 

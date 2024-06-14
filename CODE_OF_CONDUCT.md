@@ -4,7 +4,7 @@ __Code of Conduct__ of __KolibriOS-NG__ project
 
 ## Purpose
 
-A primary goal of our community is to be inclusive of a large number of contributors, with the most varied and diverse backgrounds possible. As such, we are committed to providing a friendly, safe and welcoming environment for all, regardless of gender, ability, ethnicity, socioeconomic status, and religion (or lack thereof)
+The primary goal of our community is to be inclusive of a large number of contributors, with the most varied and diverse backgrounds possible. As such, we are committed to providing a friendly, safe and welcoming environment for all, regardless of gender, ability, ethnicity, socioeconomic status, and religion (or lack thereof)
 
 This code of conduct outlines our expectations for all those who participate in our community, as well as the consequences for unacceptable behavior
 
