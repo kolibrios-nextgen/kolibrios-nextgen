@@ -1,2 +1,6 @@
-if tup.getconfig("NO_NASM") ~= "" then return end
-tup.rule("mstate.asm", "nasm -t -f bin -o %o %f " .. tup.getconfig("KPACK_CMD"), "mstate")
+if tup.getconfig("NO_FASM") ~= "" then return end
+HELPERDIR = (tup.getconfig("HELPERDIR") == "") and "../.." or tup.getconfig("HELPERDIR")
+tup.include(HELPERDIR .. "/use_fasm.lua")
+
+add_include(HELPERDIR)
+tup.rule("mstate.asm", FASM .. " %f %o " .. tup.getconfig("KPACK_CMD"), "%B")
