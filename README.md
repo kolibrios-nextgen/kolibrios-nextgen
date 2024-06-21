@@ -1,5 +1,9 @@
 # KolibriOS-NG
 
+[![License](https://img.shields.io/badge/License-GPL%202.0-green)](./COPYING.TXT)
+[![Release](https://img.shields.io/github/v/release/kolibrios-nextgen/kolibrios-nextgen?include_prereleases&label=Release)](https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/tag/v1.0)
+[![Build system](https://github.com/kolibrios-nextgen/kolibrios-nextgen/actions/workflows/build-system.yaml/badge.svg)](https://github.com/kolibrios-nextgen/kolibrios-nextgen/actions/workflows/build-system.yaml)
+
 KolibriOS-NG is a fork of the [KolibriOS](https://kolibrios.org/) operating system
 
 ## Overview
