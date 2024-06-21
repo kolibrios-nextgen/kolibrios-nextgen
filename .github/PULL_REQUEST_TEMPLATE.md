@@ -36,8 +36,8 @@ Please write 'x' letter in '[]' to agree. For example:
 <!--
 Please write 'x' letter in '[]' to agree. For example:
 
-- [x] I agree to follow this project's [__Contributing Guidelines__](../../CONTRIBUTING.md)
+- [x] I agree to follow this project's [__Contributing Guidelines__](../CONTRIBUTING.md)
 -->
 
-- [ ] I agree to follow this project's [__Contributing Guidelines__](../../CONTRIBUTING.md)
-- [ ] I agree to follow this project's [__Code of Conduct__](../../CODE_OF_CONDUCT.md)
+- [ ] I agree to follow this project's [__Contributing Guidelines__](../CONTRIBUTING.md)
+- [ ] I agree to follow this project's [__Code of Conduct__](../CODE_OF_CONDUCT.md)
