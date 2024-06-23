@@ -95,6 +95,8 @@ struct  DISKMEDIAINFO
 ; Size of the sector.
         Capacity        dq ?
 ; Size of the media in sectors.
+        LastSessionSector       dd ?
+; Number last session sectors for CDFS
 ends
 
 ; This structure represents the disk cache. To follow the old implementation,
@@ -600,6 +602,7 @@ disk_media_changed:
 ; .Flags are set to zero for possible future extensions.
         lea     edx, [esi+DISK.MediaInfo]
         and     [edx+DISKMEDIAINFO.Flags], 0
+        and     [edx+DISKMEDIAINFO.LastSessionSector], 0
         mov     al, DISKFUNC.querymedia
         stdcall disk_call_driver, edx
 ; 3b. Check the result of the callback. Abort if it failed.
@@ -1280,6 +1283,9 @@ end virtual
         test    eax, eax
         jnz     .success
         call    xfs_create_partition
+        test    eax, eax
+        jnz     .success
+        call    iso9660_create_partition
         test    eax, eax
         jnz     .success
 ; 3. No file system has recognized the volume, so just allocate the PARTITION
