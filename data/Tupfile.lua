@@ -451,7 +451,7 @@ tup.append_table(img_files, {
  {"DEVELOP/COBJ", PROGS .. "/develop/cObj/trunk/cObj"},
  {"DEVELOP/ENTROPYV", PROGS .. "/develop/entropyview/entropyview"},
  {"DEVELOP/FASM", PROGS .. "/develop/fasm/1.73/fasm"},
- {"DEVELOP/H2D2B", PROGS .. "/develop/h2d2b/trunk/h2d2b"},
+ {"DEVELOP/H2D2B", PROGS .. "/develop/h2d2b/h2d2b"},
  {"DEVELOP/HEED", PROGS .. "/develop/heed/trunk/heed"},
  {"DEVELOP/KEYASCII", PROGS .. "/develop/keyascii/trunk/keyascii"},
  {"DEVELOP/MTDBG", PROGS .. "/develop/mtdbg/mtdbg"},
