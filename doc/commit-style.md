@@ -36,7 +36,7 @@ Initial commit
 
 - Length
 
-  Commonly accepted 50/72 rule is used to format commits. 50 is the maximum number of characters of the commit title and 72 is the maximum character length of the commit body
+  The maximum number of characters in a commit header is __72__ (standard for __Git__). Additionally, __72__ is the maximum length of a line in a commit body.
 
 - Categories
 
