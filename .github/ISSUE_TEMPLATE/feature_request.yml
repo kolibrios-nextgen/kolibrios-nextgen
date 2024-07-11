@@ -1,6 +1,6 @@
 name: Feature request
 description: Suggest an idea for the project
-labels: enhancement
+labels: [ enhancement ]
 
 body:
   - type: textarea
@@ -40,19 +40,12 @@ body:
       description: >
         Add any other context or screenshots about the feature request here
 
-  - type: checkboxes
-    id: agreements
+  - type: markdown
     attributes:
-      label: Agreements
-      description: >
-        By submitting this issue, you agree to follow our
-        __Contributing Guidelines__ and __Code of Conduct__
-      options:
-        - label: >
-            I agree to follow this project's
-            [__Contributing Guidelines__](../../CONTRIBUTING.md)
-          required: true
-        - label: >
-            I agree to follow this project's
-            [__Code of Conduct__](../../CODE_OF_CONDUCT.md)
-          required: true
+      value: |
+        ### Agreements
+
+        By submitting this issue, you agree to follow our __Contributing Guidelines__ and __Code of Conduct__
+
+          - I agree to follow this project's [__Contributing Guidelines__](../CONTRIBUTING.md)
+          - I agree to follow this project's [__Code of Conduct__](../CODE_OF_CONDUCT.md)
