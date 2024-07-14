@@ -15,7 +15,7 @@
 ; The structure name must be in upper case and contain the prefix KOS_
 ; and the postfix _S. For example: KOS_THREAD_INFO_S.
 
-;;;;;;;;;;;; KolibriOS-NG system calls ;;;;;;;;;;;;
+;----------------- System functions -----------------;
 
 SF_TERMINATE_PROCESS = -1
 SF_CREATE_WINDOW = 0
@@ -300,10 +300,9 @@ SF_FUTEX = 77
   SSF_WAIT = 2
   SSF_WAKE = 3
 
-;;;;;;;;;;;; KolibriOS-NG error codes ;;;;;;;;;;
+;------------------- Error codes --------------------;
 
 ; KolibriOS-NG specific error codes:
-
 ENOERR  = 0
 EUNKFS  = 3
 EEOF    = 6
@@ -311,7 +310,6 @@ EBADFS  = 9
 EMPROCS = 32
 
 ; POSIX error codes:
-
 ENOTSUP         = 2
 ENOENT          = 5
 EFAULT          = 7
@@ -339,7 +337,7 @@ EISCONN         = 56
 ETIMEDOUT       = 60
 ECONNREFUSED    = 61
 
-;;;;;;;;;;;; KolibriOS-NG events ;;;;;;;;;;;;
+;---------------------- Events ----------------------;
 
 KOS_EV_NONE       = 0
 KOS_EV_REDRAW     = 1
@@ -353,7 +351,7 @@ KOS_EV_DEBUG      = 9
 KOS_EV_IRQ_FIRST  = 16
 KOS_EV_IRQ_LAST   = 31
 
-;;;;;;;;;;;; Structures ;;;;;;;;;;;;
+;-------------------- Structures --------------------;
 
 include 'struct.inc'
 
@@ -382,9 +380,24 @@ struct KOS_THREAD_INFO_S
                 rb (1024-76)
 ends
 
-assert sizeof.KOS_THREAD_INFO_S == 1024
+assert sizeof.KOS_THREAD_INFO_S = 1024
 
-;;;;;;;;;;;; Helper macros ;;;;;;;;;;;;
+struct KOS_SYS_COLORS_S
+  frame            dd ?
+  grab             dd ?
+  work_dark        dd ?
+  work_light       dd ?
+  grab_text        dd ?
+  work             dd ?
+  work_button      dd ?
+  work_button_text dd ?
+  work_text        dd ?
+  work_graph       dd ?
+ends
+
+assert sizeof.KOS_SYS_COLORS_S = 40
+
+;-----------------  Helper macros -------------------;
 
 macro mpack dest, hsrc, lsrc
 {
