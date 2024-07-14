@@ -1,219 +1,170 @@
-; aclock 1.1
-; Copyright (c) 2002 Thomas Mathys
-; killer@vantage.ch
-;
-; This program is free software; you can redistribute it and/or modify
-; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation; either version 2 of the License, or
-; (at your option) any later version.
-;
-; This program is distributed in the hope that it will be useful,
-; but WITHOUT ANY WARRANTY; without even the implied warranty of
-; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-; GNU General Public License for more details.
-;
-; You should have received a copy of the GNU General Public License
-; along with this program; if not, write to the Free Software
-; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+; SPDX-License-Identifier: GPL-2.0-only
+; SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
 
-	bits 32
-	%include 'mos.inc'
-	section .text
+; aclock - Analog clock (with arrow)
 
+; Author of the original version on NASM:
+; Thomas Mathys <killer@vantage.ch>
 
-;********************************************************************
-;	configuration stuff
-;********************************************************************
+format binary as ""
+use32
+org 0
 
-	%define APPNAME		"Clock"
-	%define STACKSIZE	1024
+;----------------- Programm header ------------------;
 
-	; default window position/dimensions (work area)
-	%define DEFAULT_XPOS	-20
-	%define DEFAULT_YPOS	20
-	%define DEFAULT_WIDTH	110
-	%define DEFAULT_HEIGHT	110
+db      'MENUET01'    ; signature
+dd      1             ; header version
+dd      start         ; entry point
+dd      _image_end    ; end of image
+dd      _memory       ; required memory size
+dd      _stacktop     ; address of stack top
+dd      0             ; buffer for command line arguments
+dd      0             ; buffer for path
 
-	; minimal size (horizontal and vertical) of work area
-	%define MIN_WIDTH	100
-	%define MIN_HEIGHT	100
+;-------------------- Includes ----------------------;
 
+; System
+include 'kos_api.inc'
 
-;********************************************************************
-;	header
-;********************************************************************
-	
-	MOS_HEADER01 main,image_end,memory_end,stacktop-4,cmdLine,0
+; Internal
+%include 'strlen.inc'
+%include 'str2dwrd.inc'
+%include 'strtok.inc'
+%include 'cmdline.inc'
+%include 'adjstwnd.inc'
+%include 'draw.inc'
 
-	; these includes introduce code and thus mustn't stand
-	; before the menuet header =)
-	%include 'dbgboard.inc'
-	%include 'strlen.inc'
-	%include 'str2dwrd.inc'
-	%include 'strtok.inc'
-	%include 'cmdline.inc'
-	%include 'adjstwnd.inc'
-	%include 'draw.inc'
+;-------------------- Constants ---------------------;
 
-;********************************************************************
-;	main program
-;********************************************************************
-main:
-	call	getDefaultWindowColors
-	call	parseCommandLine
+; Default window position/dimensions (work area)
 
-	; check minimal window dimensions
-	cmp	dword [wndWidth],MIN_WIDTH
-	jae	.widthok
-	mov	dword [wndWidth],MIN_WIDTH
-.widthok:
-	cmp	dword [wndHeight],MIN_HEIGHT
-	jae	.heightok
-	mov	dword [wndHeight],MIN_HEIGHT
-.heightok:
+DEFAULT_XPOS    = -20
+DEFAULT_YPOS    = 20
+DEFAULT_WIDTH   = 110
+DEFAULT_HEIGHT  = 110
 
-	; adjust window dimensions
-	mov	eax,ADJSTWND_TYPE_SKINNED
-	mov	ebx,[wndXPos]
-	mov	ecx,[wndYPos]
-	mov	edx,[wndWidth]
-	mov	esi,[wndHeight]
-	call	adjustWindowDimensions
-	mov	[wndXPos],ebx
-	mov	[wndYPos],ecx
-	mov	[wndWidth],edx
-	mov	[wndHeight],esi
+; Minimal size (horizontal and vertical) of work area
 
-	call	drawWindow
-.msgpump:
-;	call	drawClock
+MIN_WIDTH       = 100
+MIN_HEIGHT      = 100
 
-	; wait up to a second for next event
-	mov	eax,MOS_SC_WAITEVENTTIMEOUT
-	mov	ebx,100
-	int	0x40
+;---------------------- Code ------------------------;
 
-	test	eax,eax
-	jne	.event_occured
-	call	drawClock
+; Entry point
+start:
+        ; Get default colors
+        mcall   SF_STYLE_SETTINGS,
+                SSF_GET_COLORS,
+                win_colors,
+                sizeof.KOS_SYS_COLORS_S
 
-  .event_occured:
-	cmp	eax,MOS_EVT_REDRAW
-	je	.redraw
-	cmp	eax,MOS_EVT_KEY
-	je	.key
-	cmp	eax,MOS_EVT_BUTTON
-	je	.button
-	jmp	.msgpump
+        call    parseCommandLine
+
+        ; Check minimal window dimensions
+        cmp     dword [win_w], MIN_WIDTH
+        jae     .width_ok
+        mov     dword [win_w], MIN_WIDTH
+
+.width_ok:
+        cmp     dword [win_h],MIN_HEIGHT
+        jae     .height_ok
+        mov     dword [win_h],MIN_HEIGHT
+
+.height_ok:
+        ; Adjust window dimensions
+        mov     eax, ADJSTWND_TYPE_SKINNED
+        mov     ebx, [win_x_pos]
+        mov     ecx, [win_y_pos]
+        mov     edx, [win_w]
+        mov     esi, [win_h]
+        call    adjustWindowDimensions
+        mov     [win_x_pos], ebx
+        mov     [win_y_pos], ecx
+        mov     [win_w], edx
+        mov     [win_h], esi
+
+        call	draw_window
+.msg_pump:
+
+        ; Wait up to a second for next event
+        mcall   SF_WAIT_EVENT_TIMEOUT, 100
+        test    eax, eax
+        jne     .event_occured
+        call    draw_clock
+
+.event_occured:
+        cmp     eax, KOS_EV_REDRAW
+        je      .redraw
+        cmp     eax, KOS_EV_KEY
+        je      .key
+        cmp      eax, KOS_EV_BUTTON
+        je      .button
+        jmp     .msg_pump
 
 .redraw:
-	call	drawWindow
-	jmp	.msgpump
+        call    draw_window
+        jmp     .msg_pump
 .key:
-	mov	eax,MOS_SC_GETKEY
-	int	0x40
-	jmp	.msgpump
+        mcall   SF_GET_KEY
+	jmp     .msg_pump
 .button:
-	mov	eax,MOS_SC_EXIT
-	int	0x40
-	jmp	.msgpump
+        xor     eax, eax
+        dec     eax
+        ; eax = SF_TERMINATE_PROCESS (-1)
+        mcall
 
+; Define and draw window
+align 4
+draw_window:
+        pusha
 
-;********************************************************************
-;	get default window colors
-;	input		:	nothing
-;	output		:	wndColors contains default colors
-;	destroys	:	nothing
-;********************************************************************
-getDefaultWindowColors:
-	pushad
-	pushfd
-	mov	eax,MOS_SC_WINDOWPROPERTIES
-	mov	ebx,3
-	mov	ecx,wndColors
-	mov	edx,MOS_WNDCOLORS_size
-	int	0x40
-	popfd
-	popad
-	ret
+        ; Start window redraw
+        mcall	SF_REDRAW, SSF_BEGIN_DRAW
 
+        ; Create window
+        xor     eax, eax ; SF_CREATE_WINDOW
+        mov     ebx, [win_x_pos]
+        shl     ebx, 16
+        or      ebx, [win_w]
+        mov     ecx, [win_y_pos]
+        shl     ecx, 16
+        or      ecx, [win_h]
+        mov     edx, [win_colors+KOS_SYS_COLORS_S.work]
+        or      edx, 0x53000000 ; FIXME ???
+        mov     edi, label
+        mcall
 
-;********************************************************************
-;	define and draw window
-;	input		nothing
-;	output		nothing
-;	destroys	flags
-;********************************************************************
-	align	4
-drawWindow:
-	pusha
+        call    draw_clock
 
-	; start window redraw
-	mov	eax,MOS_SC_REDRAWSTATUS
-	mov	ebx,1
-	int	0x40
+        ; End window redraw
+        mcall   SF_REDRAW, SSF_END_DRAW
+        popa
+        ret
 
-	; create window
-	mov	eax,MOS_SC_DEFINEWINDOW
-	mov	ebx,[wndXPos]
-	shl	ebx,16
-	or	ebx,[wndWidth]
-	mov	ecx,[wndYPos]
-	shl	ecx,16
-	or	ecx,[wndHeight]
-	mov	edx,[wndColors+MOS_WNDCOLORS.work]
-	or	edx,0x53000000
-	mov	edi,label
-	int	0x40
+;----------------- Initialized data -----------------;
 
-	call drawClock
-	
-	; end window redraw
-	mov	eax,MOS_SC_REDRAWSTATUS
-	mov	ebx,2
-	int	0x40
-	popa
-	ret
+; Window position and dimensions.
+; dimensions are for work area only.
+win_x_pos       dd DEFAULT_XPOS
+win_y_pos       dd DEFAULT_YPOS
+win_w           dd DEFAULT_WIDTH
+win_h           dd DEFAULT_HEIGHT
 
+; Window label
+label           db "Aclock", 0
 
-;********************************************************************
-;	initialized data
-;********************************************************************
+; Token delimiter list for command line
+delimiters	db 9, 10, 11, 12, 13, 32, 0 ; FIXME: Chars? 
 
-	; window position and dimensions.
-	; dimensions are for work area only.
-wndXPos		dd	DEFAULT_XPOS
-wndYPos		dd	DEFAULT_YPOS
-wndWidth	dd	DEFAULT_WIDTH
-wndHeight	dd	DEFAULT_HEIGHT
+;---------------- Uninitialized data ----------------;
 
-	; window label
-label		db	APPNAME,0
-LABEL_LEN	equ	($-label-1)
+align 16
+_image_end:
 
-	; token delimiter list for command line
-delimiters	db	9,10,11,12,13,32,0
+win_colors      KOS_SYS_COLORS_S
 
-	; don't insert anything after this label
-image_end:
-
-
-;********************************************************************
-;	uninitialized data
-;********************************************************************
-	section .bss align=4
-
-wndColors	resb	MOS_WNDCOLORS_size
-procInfo	resb	MOS_PROCESSINFO_size
-
-	; space for command line. at the end we have an additional
-	; byte for a terminating zero, just to be sure...
-cmdLine		resb	257
-
-	alignb	4
-stack		resb	STACKSIZE
-stacktop:
-
-	; don't insert anything after this label
-memory_end:
-
+; Reserve for stack:
+                rb 512
+align 16
+_stacktop:
+_memory:
