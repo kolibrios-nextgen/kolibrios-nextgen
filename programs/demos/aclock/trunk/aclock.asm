@@ -27,6 +27,10 @@ dd      0             ; buffer for path
 include 'kos_api.inc'
 
 ; Internal
+include 'adjstwnd.inc'
+include 'cmdline.inc'
+include 'strtok.inc'
+
 %include 'strlen.inc'
 %include 'str2dwrd.inc'
 %include 'strtok.inc'
@@ -162,6 +166,10 @@ align 16
 _image_end:
 
 win_colors      KOS_SYS_COLORS_S
+
+; Space for command line. at the end we have an additional
+; byte for a terminating zero
+cmd_line        rb 257
 
 ; Reserve for stack:
                 rb 512

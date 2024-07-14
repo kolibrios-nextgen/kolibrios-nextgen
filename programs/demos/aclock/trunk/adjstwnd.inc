@@ -4,6 +4,7 @@
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
 
+;-------------------------------------------------------------;
 ; Adjust window dimensions to get a certain work area size
 ;  - first the window width and height are adjusted
 ;    and clamped if they're too large for the screen.
@@ -28,8 +29,6 @@
 ; if you pass a negative x or y it will be treated as the
 ; lower right corner of the window, relative to the lower
 ; right corner of the screen.
-
-;---------------------- Code ------------------------;
 
 adjust_window_dimensions:
         push    edi
