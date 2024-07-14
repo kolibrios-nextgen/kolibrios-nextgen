@@ -1,7 +1,7 @@
 ; SPDX-License-Identifier: GPL-2.0-only
 ; SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
 
-; aclock - Analog clock (with arrow)
+; AСlock - Analog clock (with arrow)
 
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
@@ -27,16 +27,13 @@ dd      0             ; buffer for path
 include 'kos_api.inc'
 
 ; Internal
-include 'adjstwnd.inc'
+include 'strlen.inc'
+include 'str2dwrd.inc'
+include 'strtok.inc'
 include 'cmdline.inc'
 include 'strtok.inc'
-
-%include 'strlen.inc'
-%include 'str2dwrd.inc'
-%include 'strtok.inc'
-%include 'cmdline.inc'
-%include 'adjstwnd.inc'
-%include 'draw.inc'
+include 'adjstwnd.inc'
+;%include 'draw.inc'    ; TODO: Rewrite to FASM
 
 ;-------------------- Constants ---------------------;
 
@@ -62,7 +59,7 @@ start:
                 win_colors,
                 sizeof.KOS_SYS_COLORS_S
 
-        call    parseCommandLine
+        call    parse_command_line
 
         ; Check minimal window dimensions
         cmp     dword [win_w], MIN_WIDTH
@@ -81,7 +78,7 @@ start:
         mov     ecx, [win_y_pos]
         mov     edx, [win_w]
         mov     esi, [win_h]
-        call    adjustWindowDimensions
+        call    adjust_window_dimensions
         mov     [win_x_pos], ebx
         mov     [win_y_pos], ecx
         mov     [win_w], edx
@@ -134,7 +131,7 @@ draw_window:
         shl     ecx, 16
         or      ecx, [win_h]
         mov     edx, [win_colors+KOS_SYS_COLORS_S.work]
-        or      edx, 0x53000000 ; FIXME ???
+        or      edx, 0x53000000 ; FIXME: Magic number ???
         mov     edi, label
         mcall
 
@@ -155,7 +152,7 @@ win_w           dd DEFAULT_WIDTH
 win_h           dd DEFAULT_HEIGHT
 
 ; Window label
-label           db "Aclock", 0
+label           db "AСlock", 0
 
 ; Token delimiter list for command line
 delimiters	db 9, 10, 11, 12, 13, 32, 0 ; FIXME: Chars? 
