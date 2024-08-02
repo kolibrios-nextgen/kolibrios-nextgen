@@ -1,4 +1,4 @@
-INCLUDES = tup.getcwd()
+INCLUDES = ""
 FASM_DEFAULT = "fasm"
 PESTRIP_CMD = string.gsub(tup.getconfig("PESTRIP_CMD"), "$(ROOT)", ROOT or "")
 
