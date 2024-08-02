@@ -1,432 +1,396 @@
-; drawing code for aclock
-;
-; Copyright (c) 2003 Thomas Mathys
-; killer@vantage.ch
-;
-; This program is free software; you can redistribute it and/or modify
-; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation; either version 2 of the License, or
-; (at your option) any later version.
-;
-; This program is distributed in the hope that it will be useful,
-; but WITHOUT ANY WARRANTY; without even the implied warranty of
-; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-; GNU General Public License for more details.
-;
-; You should have received a copy of the GNU General Public License
-; along with this program; if not, write to the Free Software
-; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-;
-%ifndef _DRAW_INC
-%define _DRAW_INC
+; SPDX-License-Identifier: GPL-2.0-only
+; SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
 
+; Author of the original version on NASM:
+; Thomas Mathys <killer@vantage.ch>
 
-TMR1_FACTOR	dd	0.45
-TMR2_FACTOR	dd	0.426315789
-SECR_FACTOR	dd	0.378947368
-MINR_FACTOR	dd	0.355263158
-HOURR_FACTOR	dd	0.189473684
-DATE_FACTOR	dd	0.1
+; ------------------ Constants ----------------------;
 
+DATE_WIDTH = 48
 
-monthNames:
-		db "Jan"
-		db "Feb"
-		db "Mar"
-		db "Apr"
-		db "May"
-		db "Jun"
-		db "Jul"
-		db "Aug"
-		db "Sep"
-		db "Oct"
-		db "Nov"
-		db "Dec"
+;---------------------- Code ------------------------;
 
+; draw_clock()
+; Draw the clock
+; Input:    nothing
+; Output:   nothing
+; Destroys: nothing
 
-;********************************************************************
-;	draws the clock
-;	input		:	nothing
-;	output		:	nothing
-;	destroys	:	nothing
-;********************************************************************
-drawClock:
-	%push	drawClock_context
-	%stacksize flat
-	%assign	%$localsize 0
+draw_clock:
+virtual at ebp-.LOCAL_SIZE
+.locals:
+.i              dd ?
+.tm_r1_x        dd ?
+.tm_r1_y        dd ?
+.tm_r2_x        dd ?
+.tm_r2_y        dd ?
+.sec_r_x        dd ?
+.sec_r_y        dd ?
+.min_r_x        dd ?
+.min_r_y        dd ?
+.hour_r_x       dd ?
+.hour_r_y        dd ? 
+.work_width     dd ?
+.work_height    dd ?
+.tmp            dd ?
+.LOCAL_SIZE = $ - .locals
+end virtual
 
-	%local	i:dword,		\
-		TMR1X:dword,		\
-		TMR1Y:dword,		\
-		TMR2X:dword,		\
-		TMR2Y:dword,		\
-		SECRX:dword,		\
-		SECRY:dword,		\
-		MINRX:dword,		\
-		MINRY:dword,		\
-		HOURRX:dword,		\
-		HOURRY:dword,		\
-		workwidth:dword,	\
-		workheight:dword,	\
-		foo:dword
-	
-	enter	%$localsize,0
-	pushad
-	pushfd
+        enter	.LOCAL_SIZE, 0
+        pushad
+        pushfd
 
-	; get window dimensions
-	mov	eax,MOS_SC_GETPROCESSINFO
-	mov	ebx,procInfo
-	mov	ecx,-1
-	int	0x40
+        ; Get window dimensions
+        mcall   SF_THREAD_INFO, thread_info, -1
 
-	; calculate work area size (width/height = ecx/edx)
-	; if the work area is too small (maybe the window is shaded)
-	; we don't draw anything.
-	mov	eax,MOS_SC_WINDOWPROPERTIES
-	mov	ebx,4			; get skin height (eax)
-	int	0x40
-	mov	ecx,[procInfo + MOS_PROCESSINFO.wndWidth]
-	sub	ecx,MOS_WND_SKIN_BORDER_LEFT+MOS_WND_SKIN_BORDER_RIGHT
-	mov	edx,[procInfo + MOS_PROCESSINFO.wndHeight]
-	sub	edx,eax
-	sub	edx,MOS_WND_SKIN_BORDER_BOTTOM
-	cmp	ecx,0			; width too small ?
-	jle	.bye
-	cmp	edx,0			; height too small ?
-	jnle	.continue
+        ; Calculate work area size (width/height = ecx/edx)
+        ; If the work area is too small (maybe the window is shaded)
+        ; we don't draw anything.
+        mcall   SF_STYLE_SETTINGS, SSF_GET_SKIN_HEIGHT
+        mov     ecx, [thread_info+KOS_THREAD_INFO_S.win_w]
+        sub     ecx, KOS_WIN_SKIN_BORDER_LEFT + KOS_WIN_SKIN_BORDER_RIGHT
+        mov     edx, [thread_info+KOS_THREAD_INFO_S.win_h]
+        sub     edx, eax
+        sub     edx, KOS_WIN_SKIN_BORDER_BOTTOM
+        cmp     ecx, 0                  ; width too small ?
+        jle     .bye
+        cmp     edx, 0                  ; height too small ?
+        jnle    .continue
 .bye:
-	jmp	.byebye
+        jmp     .byebye
 .continue:
-	mov	[workwidth],ecx		; save for later (for fpu)
-	mov	[workheight],edx
+        mov     [.work_width], ecx       ; save for later (for fpu)
+        mov     [.work_height], edx
 
-	; calculate center of clock (x/y = esi/edi)
-	mov	esi,[procInfo + MOS_PROCESSINFO.wndWidth]
-	shr	esi,1
-	mov	edi,[procInfo + MOS_PROCESSINFO.wndHeight]
-	sub	edi,MOS_WND_SKIN_BORDER_BOTTOM
-	sub	edi,eax
-	shr	edi,1
-	add	edi,eax
+        ; Calculate center of clock (x/y = esi/edi)
+        mov     esi, [thread_info+KOS_THREAD_INFO_S.win_w]
+        shr     esi, 1
+        mov     edi, [thread_info+KOS_THREAD_INFO_S.win_h]
+        sub     edi, KOS_WIN_SKIN_BORDER_BOTTOM
+        sub     edi, eax
+        shr     edi, 1
+        add     edi, eax
 
-	; clear work area
-	pushad
-	mov	ebx,(MOS_WND_SKIN_BORDER_LEFT)*0x10000	; x start
-	or	ebx,ecx					; width
-	inc	ebx
-	mov	ecx,eax					; y start
-	shl	ecx,16					; (=skin height)
-	or	ecx,edx					; height
-	inc	ecx
-	mov	edx,[wndColors + MOS_WNDCOLORS.work]
-	mov	eax,MOS_SC_DRAWBAR
-	int	0x40
-	popad
+        ; Clear work area
+        pushad
+        mov     ebx, KOS_WIN_SKIN_BORDER_LEFT*0x10000   ; x start
+        or      ebx, ecx                                ; width
+        inc     ebx
+        mov     ecx, eax        ; y start
+        shl     ecx, 16         ; (= skin height)
+        or      ecx, edx        ; height
+        inc     ecx
+        mov     edx, [win_colors+KOS_SYS_COLORS_S.work]
+        mov     eax, SSF_REDRAW_RECT
+        mcall
+        popad
 
-	; calculate second hand radii
-	fild	dword [workwidth]
-	fmul	dword [SECR_FACTOR]
-	fstp	dword [SECRX]
-	fild	dword [workheight]
-	fmul	dword [SECR_FACTOR]
-	fstp	dword [SECRY]
+        ; Calculate second hand radii
+        fild    dword [.work_width]
+        fmul    dword [sec_r_factor]
+        fstp    dword [.sec_r_x]
+        fild    dword [.work_height]
+        fmul    dword [sec_r_factor]
+        fstp    dword [.sec_r_y]
 
-	; calculate minute hand radii
-	fild	dword [workwidth]
-	fmul	dword [MINR_FACTOR]
-	fstp	dword [MINRX]
-	fild	dword [workheight]
-	fmul	dword [MINR_FACTOR]
-	fstp	dword [MINRY]
+        ; Calculate minute hand radii
+        fild    dword [.work_width]
+        fmul    dword [min_r_factor]
+        fstp    dword [.min_r_x]
+        fild    dword [.work_height]
+        fmul    dword [min_r_factor]
+        fstp    dword [.min_r_y]
 
-	; calculate hour hand radii
-	fild	dword [workwidth]
-	fmul	dword [HOURR_FACTOR]
-	fstp	dword [HOURRX]
-	fild	dword [workheight]
-	fmul	dword [HOURR_FACTOR]
-	fstp	dword [HOURRY]
+        ; Calculate hour hand radii
+        fild    dword [.work_width]
+        fmul    dword [hour_r_factor]
+        fstp    dword [.hour_r_x]
+        fild    dword [.work_height]
+        fmul    dword [hour_r_factor]
+        fstp    dword [.hour_r_y ]
 
-	; calculate tick mark radii
-	fild	dword [workwidth]
-	fmul	dword [TMR1_FACTOR]
-	fstp	dword [TMR1X]
-	fild	dword [workheight]
-	fmul	dword [TMR1_FACTOR]
-	fstp	dword [TMR1Y]
-	fild	dword [workwidth]
-	fmul	dword [TMR2_FACTOR]
-	fstp	dword [TMR2X]
-	fild	dword [workheight]
-	fmul	dword [TMR2_FACTOR]
-	fstp	dword [TMR2Y]
+        ; Calculate tick mark radii
+        fild    dword [.work_width]
+        fmul    dword [tm_r1_factor]
+        fstp    dword [.tm_r1_x]
+        fild    dword [.work_height]
+        fmul    dword [tm_r1_factor]
+        fstp    dword [.tm_r1_y]
+        fild    dword [.work_width]
+        fmul    dword [tm_r2_factor]
+        fstp    dword [.tm_r2_x]
+        fild    dword [.work_height]
+        fmul    dword [tm_r2_factor]
+        fstp    dword [.tm_r2_y]
 
-	; get system clock (edx)
-	mov	eax,MOS_SC_GETSYSCLOCK
-	int	0x40
-	mov	edx,eax
+        ; Get system time (edx)
+        mcall   SF_GET_SYS_TIME
+        mov     edx, eax
 
-	; draw second hand
-	push	edx
-	mov	eax,edx
-	shr	eax,16
-	call	bcdbin
-	mov	ecx,eax			; save seconds for later
-	push	ecx
-	push	eax
-	fpush32	0.104719755		; 2*pi/60
-	push	dword [SECRX]
-	push	dword [SECRY]
-	push	esi
-	push	edi
-	call	getHandCoords
-	mov	eax,MOS_SC_DRAWLINE
-	shl	ebx,16
-	or	ebx,esi
-	shl	ecx,16
-	or	ecx,edi
-	mov	edx,[wndColors + MOS_WNDCOLORS.workText]
-	int	0x40
-	pop	ecx
-	pop	edx
+        ; Draw second hand
+        push    edx
+        mov     eax, edx
+        shr     eax, 16
+        call    bcdbin
+        mov     ecx, eax        ; save seconds for later
+        push    ecx
+        push    eax
+        push    0.104719755     ; 2*pi/60
+        push    dword [.sec_r_x]
+        push    dword [.sec_r_y]
+        push    esi
+        push    edi
+        call    get_hand_coords
+        mov     eax, SF_DRAW_LINE
+        shl     ebx, 16
+        or      ebx, esi
+        shl     ecx, 16
+        or      ecx, edi
+        mov     edx, [win_colors+KOS_SYS_COLORS_S.work_text]
+        mcall
+        pop     ecx
+        pop     edx
 
-	; draw minute hand
-	push	edx
-	mov	eax,edx
-	shr	eax,8
-	call	bcdbin
-	mov	edx,60
-	mul	edx
-	add	eax,ecx
-	mov	ecx,eax			; save for later
-	push	ecx
-	push	eax
-	fpush32 0.001745329		; 2*pi/60/60
-	push	dword [MINRX]
-	push	dword [MINRY]
-	push	esi
-	push	edi
-	call	getHandCoords
-	mov	eax,MOS_SC_DRAWLINE
-	shl	ebx,16
-	or	ebx,esi
-	shl	ecx,16
-	or	ecx,edi
-	mov	edx,[wndColors + MOS_WNDCOLORS.workText]
-	int	0x40
-	pop	ecx
-	pop	edx
+        ; Draw minute hand
+        push    edx
+        mov     eax, edx
+        shr     eax, 8
+        call    bcdbin
+        mov     edx, 60
+        mul     edx
+        add     eax, ecx
+        mov     ecx, eax        ; save for later
+        push    ecx
+        push    eax
+        push    0.001745329     ; 2*pi/60/60
+        push    dword [.min_r_x]
+        push    dword [.min_r_y]
+        push    esi
+        push    edi
+        call    get_hand_coords
+        mov     eax, SF_DRAW_LINE
+        shl     ebx, 16
+        or      ebx, esi
+        shl     ecx, 16
+        or      ecx, edi
+        mov     edx, [win_colors+KOS_SYS_COLORS_S.work_text]
+        mcall
+        pop     ecx
+        pop     edx
 
-	; draw hour hand
-	push	edx
-	mov	eax,edx
-	call	bcdbin
-	cmp	eax,11			; % 12 (just to be sure)
-	jnae	.hoursok
-	sub	eax,12
-.hoursok:
-	mov	edx,60*60
-	mul	edx
-	add	eax,ecx
-	push	eax
-	fpush32	0.000145444		; 2*pi/60/60/12
-	push	dword [HOURRX]
-	push	dword [HOURRY]
-	push	esi
-	push	edi
-	call	getHandCoords
-	mov	eax,MOS_SC_DRAWLINE
-	shl	ebx,16
-	or	ebx,esi
-	shl	ecx,16
-	or	ecx,edi
-	mov	edx,[wndColors + MOS_WNDCOLORS.workText]
-	int	0x40
-	pop	edx
-	
-	; draw tick marks
-	mov	dword [i],11		; draw 12 marks
-.drawtickmarks:
-	push	dword [i]		; calculate start point
-	fpush32	0.523598776		; 2*pi/12
-	push	dword [TMR1X]
-	push	dword [TMR1Y]
-	push	esi
-	push	edi
-	call	getHandCoords
-	mov	eax,ebx			; save in eax and edx
-	mov	edx,ecx
-	push	dword [i]
-	fpush32	0.523598776		; 2*pi/12
-	push	dword [TMR2X]
-	push	dword [TMR2Y]
-	push	esi
-	push	edi
-	call	getHandCoords
-	shl	eax,16
-	shl	edx,16
-	or	ebx,eax			; ebx = x start and end
-	or	ecx,edx			; ecx = y start and end
-	mov	edx,[wndColors + MOS_WNDCOLORS.workText]
-	mov	eax,MOS_SC_DRAWLINE
-	int	0x40
-	dec	dword [i]
-	jns	.drawtickmarks
+        ; Draw hour hand
+        push    edx
+        mov     eax, edx
+        call    bcdbin
+        cmp     eax, 11         ; % 12 (just to be sure)
+        jnae    .hours_ok
+        sub     eax, 12
+.hours_ok:
+        mov     edx, 60*60
+        mul     edx
+        add     eax,ecx
+        push    eax
+        push    0.000145444     ; 2*pi/60/60/12
+        push    dword [.hour_r_x]
+        push    dword [.hour_r_y ]
+        push    esi
+        push    edi
+        call    get_hand_coords
+        mov     eax, SF_DRAW_LINE
+        shl     ebx, 16
+        or      ebx, esi
+        shl     ecx, 16
+        or      ecx, edi
+        mov     edx, [win_colors+KOS_SYS_COLORS_S.work_text]
+        mcall
+        pop     edx
+    
+        ; Draw tick marks
+        mov    dword [.i], 11    ; draw 12 marks
+.draw_tick_marks:
+        push    dword [.i]       ; calculate start point
+        push    0.523598776     ; 2*pi/12
+        push    dword [.tm_r1_x]
+        push    dword [.tm_r1_y]
+        push    esi
+        push    edi
+        call    get_hand_coords
+        mov     eax, ebx        ; save in eax and edx
+        mov     edx, ecx
+        push    dword [.i]
+        push    0.523598776     ; 2*pi/12
+        push    dword [.tm_r2_x]
+        push    dword [.tm_r2_y]
+        push    esi
+        push    edi
+        call    get_hand_coords
+        shl     eax, 16
+        shl     edx, 16
+        or      ebx, eax        ; ebx = x start and end
+        or      ecx, edx        ; ecx = y start and end
+        mcall   SF_DRAW_LINE,, [win_colors+KOS_SYS_COLORS_S.work_text]
+        dec     dword [.i]
+        jns     .draw_tick_marks
 
-	%define	DATE_WIDTH	48
+        ; Calculate text start position
+        mov     eax, [thread_info+KOS_THREAD_INFO_S.win_w]
+        sub     eax, DATE_WIDTH         ; x = (wndwidth-textwidth)/2
+        shr     eax, 1                  ; eax = x
+        fild    dword [.work_height]     ; y = date_factor*.work_height...
+        fmul    dword [date_factor]
+        mov     [.tmp], edi              ; ... + y_clock_center
+        fiadd   dword [.tmp]
+        fistp   dword [.tmp]
+        mov     ebx, [.tmp]              ; ebx = y
 
-	; calculate text start position
-	mov	eax,[procInfo+MOS_PROCESSINFO.wndWidth]
-	sub	eax,DATE_WIDTH		; x = (wndwidth-textwidth)/2
-	shr	eax,1			; eax = x
-	fild	dword [workheight]	; y = DATE_FACTOR*workheight...
-	fmul	dword [DATE_FACTOR]
-	mov	[foo],edi		; ... + y_clockcenter
-	fiadd	dword [foo]
-	fistp	dword [foo]
-	mov	ebx,[foo]		; ebx = y
-
-	; draw text at all ?
-	cmp	dword [workwidth],DATE_WIDTH	; text too wide ?
-	jb	.goodbye
-	mov	ecx,ebx				; text too high ?
-	add	ecx,10-1
-	mov	edx,[procInfo+MOS_PROCESSINFO.wndHeight]
-	sub	edx,MOS_WND_SKIN_BORDER_BOTTOM
-	cmp	ecx,edx
-	jnae	.yousuck
+        ; Draw text at all ?
+        cmp     dword [.work_width], DATE_WIDTH   ; text too wide ?
+        jb      .goodbye
+        mov     ecx, ebx                          ; text too high ?
+        add     ecx, 10-1
+        mov     edx, [thread_info+KOS_THREAD_INFO_S.win_h]
+        sub     edx, KOS_WIN_SKIN_BORDER_BOTTOM
+        cmp     ecx, edx
+        jnae    .draw_all
 .goodbye:
-	jmp	.bye
-.yousuck:
+        jmp     .bye
+.draw_all:
+        ; ebx = (x << 16) | y
+        shl     eax, 16
+        or      ebx, eax
 
+        ; Get date (edi)
+        mcall   SF_GET_SYS_DATE
+        mov     edi, eax
 
-	; ebx = (x << 16) | y
-	shl	eax,16
-	or	ebx,eax
-	
-	; get date (edi)
-	mov	eax,MOS_SC_GETDATE
-	int	0x40
-	mov	edi,eax
+        ; Display month
+        mov     eax, edi        ; get month
+        shr     eax, 8
+        call    bcdbin
 
-	; display month
-	mov	eax,edi			; get month
-	shr	eax,8
-	call	bcdbin
-					; ebx contains already position
-	mov	ecx,[wndColors+MOS_WNDCOLORS.workText]
-	lea	edx,[monthNames-3+eax*2+eax]; -3 because eax = 1..12 =]
-	mov	esi,3			; text length
-	mov	eax,MOS_SC_WRITETEXT
-	int	0x40
+        ; ebx contains already position    
+        mov     ecx, [win_colors+KOS_SYS_COLORS_S.work_text]
+        lea     edx, [month_names-3+eax*2+eax]   ; -3 because eax = 1..12
+        mov     esi, 3                           ; text length
+        mov     eax, SF_DRAW_TEXT
+        mcall
 
-	; display date
-	add	ebx,MOS_DWORD(3*6+3,0)
-	mov	eax,edi			; get date
-	shr	eax,16
-	call	bcdbin
-	mov	edx,ebx			; position must be in edx
-	mov	ebx,0x00020000		; number, display two digits
-	mov	ecx,eax			; number to display
-	mov	esi,[wndColors+MOS_WNDCOLORS.workText]
-	mov	eax,MOS_SC_WRITENUMBER
-	int	0x40
+        ; Display date
+        add     ebx, ((3*6+3) and 0xFFFF) shl 16
+        mov     eax, edi                ; get date
+        shr     eax, 16
+        call    bcdbin
+        mov     edx, ebx                ; position must be in edx
+        mov     ebx, 0x00020000         ; number, display two digits
+        mov     ecx, eax                ; number to display
+        mov     esi, [win_colors+KOS_SYS_COLORS_S.work_text]
+        mov     eax, SF_DRAW_NUMBER
+        mcall
 
-	; display year. the way we avoid the y2k bug is even
-	; simpler, yet much better than in the last version:
-	; now we simply display the last two digits and let the
-	; user decide wether it's the year 1903 or 2003 =]
-	add	edx,MOS_DWORD(2*6+3,0)
-	mov	eax,edi			; get year
-	call	bcdbin
-	mov	ebx,0x00020000		; number, display two digits
-	mov	ecx,eax			; number to display
-					; edx contains already position
-	mov	esi,[wndColors+MOS_WNDCOLORS.workText]
-	mov	eax,MOS_SC_WRITENUMBER
-	int	0x40
+        ; Display year. the way we avoid the y2k bug is even
+        ; simpler, yet much better than in the last version:
+        ; now we simply display the last two digits and let the
+        ; user decide wether it's the year 1903 or 2003.
+        add     edx, ((2*6+3) and 0xFFFF) shl 16
+        mov     eax, edi        ; get year
+        call    bcdbin
+        mov     ebx, 0x00020000 ; number, display two digits
+        mov     ecx, eax        ; number to display
+                                ; edx contains already position
+        mov     esi, [win_colors+KOS_SYS_COLORS_S.work_text]
+        mov     eax, SF_DRAW_NUMBER
+        mcall
 
 .byebye:
-	popfd
-	popad
-	leave
-	ret
-	%pop
+        popfd
+        popad
+        ret
 
-
-;**********************************************************
-; bcdbin
-; converts a 8 bit bcd number into a 32 bit binary number
+; bcdbin()
+; Converts a 8 bit bcd number into a 32 bit binary number
 ;
-; in		al = 8 bit bcd number
-; out		eax = 32 bit binary number
-; destroys	dl,flags
-;**********************************************************
+; Input:        al = 8 bit bcd number
+; Output:       eax = 32 bit binary number
+; Destroys:     dl, flags
+
 bcdbin:
-	push	edx
-	pushfd
-	mov	dl,al			; save bcd number
-	shr	al,4			; convert upper nibble
-	mov	ah,10
-	mul	ah
-	and	dl,15			; add lower nibble
-	add	al,dl
-	and	eax,255			; !
-	popfd
-	pop	edx
-	ret
+        push    edx
+        pushfd
+        mov    dl, al   ; save bcd number
+        shr    al, 4    ; convert upper nibble
+        mov    ah, 10
+        mul    ah
+        and    dl, 15   ; add lower nibble
+        add    al, dl
+        and    eax, 255
+        popfd
+        pop    edx
+        ret
 
+; get_hand_coords()
+; Calculates the end point of a hand
+; Input (on stack, push from top to bottom):
+;   .angle        angle (integer)
+;   .deg2rad      conversion factor for ANGLE (32 bit real)
+;   .radius_x     x radius (32 bit real)
+;   .radius_y     y radius (32 bit real)
+;   .center.x     x center of the clock (integer)
+;   .center_y     y center of the clock (integer)
+; Output:
+; ebx = x coordinate in bits 0..15, bits 16..31 are zero
+; ecx = y coordinate in bits 0..15, bits 16..31 are zero
+; Destroys: nothing
 
-;********************************************************************
-; getHandCoords
-; calculates the end point of a hand
-;
-; input (on stack, push from top to bottom):
-; ANGLE		angle (integer)
-; DEG2RAD	conversion factor for ANGLE (32 bit real)
-; RADIUSX	x radius (32 bit real)
-; RADIUSY	y radius (32 bit real)
-; CENTERX	x center of the clock (integer)
-; CENTERY	y center of the clock (integer)
-;
-; output:
-; ebx		x coordinate in bits 0..15, bits 16..31 are zero
-; ecx		y coordinate in bits 0..15, bits 16..31 are zero
-;
-; destroys:
-; nothing
-;********************************************************************
-getHandCoords:
+get_hand_coords:
+virtual at ebp+8
+.center_y        dd ?
+.center_x        dd ?
+.radius_y       dd ?
+.radius_x       dd ?
+.deg2rad        dd ?
+.angle          dd ?
+end virtual
 
-ANGLE	equ	28
-DEG2RAD	equ	24
-RADIUSX	equ	20
-RADIUSY	equ	16
-CENTERX	equ	12
-CENTERY	equ	8
+        enter   0,0
+        pushfd
 
-	enter	0,0
-	pushfd
+        fild    dword [.angle]  ; get angle
+        fmul    dword [.deg2rad]    ; convert to radians
+        fsincos
+        fmul    dword [.radius_y]    ; -y * radius + clockcy
+        fchs
+        fiadd   dword [.center_x]
+        fistp   dword [.center_y]    
+        fmul    dword [.radius_x]    ; x * radius + clockcx
+        fiadd   dword [.center_y]
+        fistp   dword [.center_x]
+    
+        mov ebx, [.center_x]
+        mov ecx, [.center_y]
 
-	fild dword [ebp+ANGLE]		; get angle
-	fmul dword [ebp+DEG2RAD]	; convert to radians
-	fsincos
-	fmul dword [ebp+RADIUSY]	; -y * radius + clockcy
-	fchs
-	fiadd dword [ebp+CENTERY]
-	fistp dword [ebp+CENTERY]	
-	fmul dword [ebp+RADIUSX]	; x * radius + clockcx
-	fiadd dword [ebp+CENTERX]
-	fistp dword [ebp+CENTERX]
-	
-	mov ebx,[ebp+CENTERX]
-	mov ecx,[ebp+CENTERY]
+        popfd
+        leave
+        ret     4*6
 
-	popfd
-	leave
-	ret	4*6
+;----------------- Initialized data -----------------;
 
+tm_r1_factor     dd      0.45
+tm_r2_factor     dd      0.426315789
+sec_r_factor     dd      0.378947368
+min_r_factor     dd      0.355263158
+hour_r_factor    dd      0.189473684
+date_factor     dd      0.1
 
-%endif
-
+month_names:
+        db "Jan"
+        db "Feb"
+        db "Mar"
+        db "Apr"
+        db "May"
+        db "Jun"
+        db "Jul"
+        db "Aug"
+        db "Sep"
+        db "Oct"
+        db "Nov"
+        db "Dec"
