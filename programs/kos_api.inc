@@ -351,6 +351,12 @@ KOS_EV_DEBUG      = 9
 KOS_EV_IRQ_FIRST  = 16
 KOS_EV_IRQ_LAST   = 31
 
+;------------- Skinned window borders ---------------;
+
+KOS_WIN_SKIN_BORDER_LEFT = 5
+KOS_WIN_SKIN_BORDER_RIGHT	= 5
+KOS_WIN_SKIN_BORDER_BOTTOM = 5
+
 ;-------------------- Structures --------------------;
 
 include 'struct.inc'
