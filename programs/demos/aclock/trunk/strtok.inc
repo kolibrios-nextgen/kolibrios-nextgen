@@ -4,7 +4,6 @@
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
 
-;-------------------------------------------------------------;
 ; strtok()
 ; This function works like strtok from a c runtime library.
 ; Note that it is not threadsafe. it would be an easy task.
@@ -12,7 +11,6 @@
 ; .adx must be removed, instead the last search address is
 ; stored at some location provided by the user (passed as
 ; a third parameter in ecx or so)
-;
 ; Input:
 ;       eax: address of string to be searched (asciiz), or
 ;            0 to get the next token of the current string
@@ -73,9 +71,9 @@ strtok:
         cmp     al, cl                  ; is AL a delimiter ?
         jne     .continue2              ; nope -> continue
         or      al, al                  ; terminating zero found ?
-        jnz     .argle
+        jnz     .mark_end_of_token
         xor     esi, esi                ; yeah -> remember this
-        jmp     .bargle
+        jmp     .remeber_search_addr
 .mark_end_of_token:
         mov    byte [esi-1], 0          ; nope -> mark end of token
 .remeber_search_addr:

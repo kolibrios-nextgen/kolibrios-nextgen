@@ -4,7 +4,7 @@
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
 
-;-------------------------------------------------------------;
+; adjust_window_dimensions()
 ; Adjust window dimensions to get a certain work area size
 ;  - first the window width and height are adjusted
 ;    and clamped if they're too large for the screen.
@@ -48,7 +48,7 @@ adjust_window_dimensions:
         mcall   SF_GET_SCREEN_SIZE      ; get screen dimensions
         mov     edi, eax                ; edi = screen width
         shr     edi, 16
-        movz    ebp, eax                ; ebp = screen height
+        movzx   ebp, ax                 ; ebp = screen height
         cmp     edx, edi                ; window width > screen width ?
         jna     .width_ok
         mov     edx, edi                ; yes -> use screen width
@@ -58,7 +58,7 @@ adjust_window_dimensions:
         mov     esi, ebp                ; yes -> use screen height
 .height_ok:
         ; Adjust x position
-        or      bx, ebx                 ; do the lower right corner
+        or      ebx, ebx                 ; do the lower right corner
         jns     .x_neg                  ; stuff if x is negative.
         add     ebx, edi
         sub     ebx, edx

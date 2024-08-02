@@ -4,7 +4,8 @@
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
 
-;-------------------------------------------------------------;
+
+; parse_command_line()
 ; Command line parsing code for Aclock
 ; Input:    nothing
 ; Output:   win_x_pos, win_y_pos, win_w, win_h 
@@ -15,8 +16,8 @@ parse_command_line:
         pushfd
 
         ; Terminate command line, just to be sure
-        xor     eax, eax
-        mov     byte [cmd_line + 256], eax
+        xor     ah, ah
+        mov     byte [cmd_line + 256], ah
 
         ; Go through all tokens
         mov     eax, cmd_line           ; eax -> command line
@@ -76,7 +77,8 @@ parse_command_line:
         pop     eax
         jmp     .next_param
 
-;-------------------------------------------------------------;
+
+; parse_position_param()
 ; Parse position parameter
 ; Input:    eax = address of first character of parameter
 ; Output:   eax contains position
@@ -109,7 +111,8 @@ parse_position_param:
         pop     ebx
         ret
 
-;-------------------------------------------------------------;
+
+; parse_size_param()
 ; Parse dimension parameter
 ; Input:    eax = address of first char of parameter
 ; Output:   eax = contains dimension

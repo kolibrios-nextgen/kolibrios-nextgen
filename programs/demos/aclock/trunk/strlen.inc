@@ -4,7 +4,7 @@
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
 
-;-------------------------------------------------------------;
+; strlen()
 ; Returns the length of an asciiz string
 ; Input:    esi = pointer to string
 ; Output:   eax = string length

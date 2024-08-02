@@ -29,23 +29,20 @@ include 'kos_api.inc'
 ; Internal
 include 'strlen.inc'
 include 'str2dwrd.inc'
-include 'strtok.inc'
 include 'cmdline.inc'
 include 'strtok.inc'
 include 'adjstwnd.inc'
-;%include 'draw.inc'    ; TODO: Rewrite to FASM
+include 'draw.inc'
 
 ;-------------------- Constants ---------------------;
 
 ; Default window position/dimensions (work area)
-
 DEFAULT_XPOS    = -20
 DEFAULT_YPOS    = 20
 DEFAULT_WIDTH   = 110
 DEFAULT_HEIGHT  = 110
 
 ; Minimal size (horizontal and vertical) of work area
-
 MIN_WIDTH       = 100
 MIN_HEIGHT      = 100
 
@@ -54,9 +51,9 @@ MIN_HEIGHT      = 100
 ; Entry point
 start:
         ; Get default colors
-        mcall   SF_STYLE_SETTINGS,
-                SSF_GET_COLORS,
-                win_colors,
+        mcall   SF_STYLE_SETTINGS, \
+                SSF_GET_COLORS, \
+                win_colors, \
                 sizeof.KOS_SYS_COLORS_S
 
         call    parse_command_line
@@ -67,13 +64,12 @@ start:
         mov     dword [win_w], MIN_WIDTH
 
 .width_ok:
-        cmp     dword [win_h],MIN_HEIGHT
+        cmp     dword [win_h], MIN_HEIGHT
         jae     .height_ok
-        mov     dword [win_h],MIN_HEIGHT
+        mov     dword [win_h], MIN_HEIGHT
 
 .height_ok:
         ; Adjust window dimensions
-        mov     eax, ADJSTWND_TYPE_SKINNED
         mov     ebx, [win_x_pos]
         mov     ecx, [win_y_pos]
         mov     edx, [win_w]
@@ -98,7 +94,7 @@ start:
         je      .redraw
         cmp     eax, KOS_EV_KEY
         je      .key
-        cmp      eax, KOS_EV_BUTTON
+        cmp     eax, KOS_EV_BUTTON
         je      .button
         jmp     .msg_pump
 
@@ -131,8 +127,8 @@ draw_window:
         shl     ecx, 16
         or      ecx, [win_h]
         mov     edx, [win_colors+KOS_SYS_COLORS_S.work]
-        or      edx, 0x53000000 ; FIXME: Magic number ???
-        mov     edi, label
+        or      edx, 0x53000000
+        mov     edi, title
         mcall
 
         call    draw_clock
@@ -151,11 +147,11 @@ win_y_pos       dd DEFAULT_YPOS
 win_w           dd DEFAULT_WIDTH
 win_h           dd DEFAULT_HEIGHT
 
-; Window label
-label           db "AСlock", 0
+; Window title
+title           db "AСlock", 0
 
 ; Token delimiter list for command line
-delimiters	db 9, 10, 11, 12, 13, 32, 0 ; FIXME: Chars? 
+delimiters	db 9, 10, 11, 12, 13, 32, 0
 
 ;---------------- Uninitialized data ----------------;
 
@@ -163,6 +159,7 @@ align 16
 _image_end:
 
 win_colors      KOS_SYS_COLORS_S
+thread_info     KOS_THREAD_INFO_S
 
 ; Space for command line. at the end we have an additional
 ; byte for a terminating zero

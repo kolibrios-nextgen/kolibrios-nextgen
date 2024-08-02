@@ -4,15 +4,13 @@
 ; Author of the original version on NASM:
 ; Thomas Mathys <killer@vantage.ch>
 
-;-------------------------------------------------------------;
-: Converts an asciiz string into an unsigned dword.
+; string2dword()
+; Converts an asciiz string into an unsigned dword.
 ; (base 10 is assumed)
-;
 ; - first, leading whitespaces are skipped
 ; - then the function converts the string, until it
 ;   finds the terminating zero, another character it
 ;   cannot convert or the number becomes too large.
-;
 ; Input:  esi = pointer to string
 ; Output: eax = unsigned dword
 ;		the function tries to convert as
@@ -34,15 +32,15 @@ string2dword:
 .skip_spaces:
         lodsb
         cmp     al, 0x20        ; space
-        je      .skipspaces
+        je      .skip_spaces
         cmp     al, 0x0C        ; 'FF'
-        je      .skipspaces
+        je      .skip_spaces
         cmp     al, 0x0A        ; 'LF'
-        je      .skipspaces
+        je      .skip_spaces
         cmp     al, 0x0D        ; 'CR'
-        je      .skipspaces
+        je      .skip_spaces
         cmp     al, 0x09        ; 'HT'
-        je      .skipspaces
+        je      .skip_spaces
         cmp     al, 0x0B        ; 'VT'
         je      .skip_spaces
 
@@ -65,7 +63,7 @@ string2dword:
 
 .overflow:
         xor     ebx, ebx
-        dec     ebc             ; ebx = 0xffffffff
+        dec     ebx             ; ebx = 0xffffffff
 .done:
         mov     eax, ebx
         popfd
