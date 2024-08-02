@@ -47,9 +47,9 @@ end virtual
         ; If the work area is too small (maybe the window is shaded)
         ; we don't draw anything.
         mcall   SF_STYLE_SETTINGS, SSF_GET_SKIN_HEIGHT
-        mov     ecx, [thread_info + KOS_THREAD_INFO_S.win_w]
+        mov     ecx, [thread_info+KOS_THREAD_INFO_S.win_w]
         sub     ecx, KOS_WIN_SKIN_BORDER_LEFT + KOS_WIN_SKIN_BORDER_RIGHT
-        mov     edx, [thread_info + KOS_THREAD_INFO_S.win_h]
+        mov     edx, [thread_info+KOS_THREAD_INFO_S.win_h]
         sub     edx, eax
         sub     edx, KOS_WIN_SKIN_BORDER_BOTTOM
         cmp     ecx, 0                  ; width too small ?
@@ -63,9 +63,9 @@ end virtual
         mov     [.work_height], edx
 
         ; Calculate center of clock (x/y = esi/edi)
-        mov     esi, [thread_info + KOS_THREAD_INFO_S.win_w]
+        mov     esi, [thread_info+KOS_THREAD_INFO_S.win_w]
         shr     esi, 1
-        mov     edi, [thread_info + KOS_THREAD_INFO_S.win_h]
+        mov     edi, [thread_info+KOS_THREAD_INFO_S.win_h]
         sub     edi, KOS_WIN_SKIN_BORDER_BOTTOM
         sub     edi, eax
         shr     edi, 1
