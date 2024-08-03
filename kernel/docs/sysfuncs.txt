@@ -8,11 +8,14 @@
 
 SYSTEM FUNCTIONS of KolibriOS-NG
 
+All constants and structures mentioned in this document are 
+available in the "kosapi.inc" file.
+
 Number of the function is located in the register eax.
 The call of the system function is executed by "int 0x40" command.
+However, it is highly recommended to use the "mcall" macro.
 All registers except explicitly declared in the returned value,
     including eflags, are preserved.
-
 
 ======================================================================
 ============== Function 0 - define and draw the window. ==============
@@ -287,7 +290,8 @@ Returned value:
     but if pointer in ebx is illegal, for example,
     [ebx, ebx + 0x4C) region intersects with kernel memory,
     then function returns -1
-  * buffer pointed to by ebx contains the following information:
+  * buffer pointed to by ebx contains the following information
+    (see KOS_THREAD_INFO_S):
     * +0: dword: usage of the processor (how many time units
       per second leaves on execution of this thread)
     * +4: word: position of the window of thread in the window stack
@@ -322,11 +326,16 @@ Returned value:
     * +62 = +0x3E: dword: width of the client area
     * +66 = +0x42: dword: height of the client area
     * +70 = +0x46: byte: state of the window - bitfield
-      * bit 0 (mask 1): window is maximized
-      * bit 1 (mask 2): window is minimized to panel
-      * bit 2 (mask 4): window is rolled up
+      * KOS_WIN_STATE_MAXIMIZED (bit 0 / mask 1):
+          window is maximized
+      * KOS_WIN_STATE_MINIMIZED (bit 1 / mask 2):
+          window is minimized to panel
+      * KOS_WIN_STATE_COLLAPSED (bit 2 / mask 4):
+          window is rolled up
     * +71 = +0x47: dword: event mask
-    * +75 = +0x4B: byte: keyboard mode(ASCII = 0; SCAN = 1)
+    * +75 = +0x4B: byte: keyboard mode
+      * KOS_KEYBOARD_MODE_ASCII = 0
+      * KOS_KEYBOARD_MODE_SCAN = 1
 Remarks:
   * Slots are numbered starting from 1.
   * Returned value is not a total number of threads, because there
@@ -2234,8 +2243,8 @@ Parameters:
     (must be 40 bytes for future compatibility)
 Returned value:
   * function does not return value
-Format of the color table:
-each item is dword-value for color 0x00RRGGBB
+Format of the color table (see KOS_SYS_COLORS_S) each item is
+dword-value for color 0x00RRGGBB
   * +0: dword: none - reserved
   * +4: dword: none - reserved
   * +8: dword: work_dark - dark color of working area 
@@ -2250,14 +2259,6 @@ each item is dword-value for color 0x00RRGGBB
   * +32 = +0x20: dword: work_text - color of text in working area
   * +36 = +0x24: dword: graph - color of graphics in working area
 Remarks:
-  * Structure of the color table is described in the standard
-    include file 'macros.inc' as 'system_colors'; for example,
-    it is possible to write:
-        sc      system_colors           ; variable declaration
-        ...                             ; somewhere one must call
-                                        ; this function with ecx=sc
-        mov     ecx, [sc.work_button_text]      ; read text color on
-                                        ; button in working area
   * A program itself decides to use or not to use color table.
     For usage program must simply at calls to drawing functions select
     color taken from the table.
@@ -5334,28 +5335,38 @@ These functions return only those events, which enter into a mask set
 by function 40. By default it is first three,
 there is enough for most applications.
 Codes of events:
-  * 1 = redraw event (is reset by call to function 0)
-  * 2 = key on keyboard is pressed (acts, only when the window is
-    active) or hotkey is pressed; is reset, when all keys from
-    the buffer are read out by function 2
-  * 3 = button is pressed, defined earlier by function 8
-    (or close button, created implicitly by function 0;
-    minimize button is handled by the system and sends no message;
-    acts, only when the window is active;
-    is reset when all buttons from the buffer
-    are read out by function 17)
-  * 4 = reserved (in current implementation never comes even after
-    unmasking by function 40)
-  * 5 = kernel finished redrawing of the desktop background
-  * 6 = mouse event (something happened - button pressing or moving;
-    is reset at reading)
-  * 7 = IPC event (see function 60 -
-    Inter Process Communication; is reset at reading)
-  * 8 = network event (is reset at reading)
-  * 9 = debug event (is reset at reading; see
-    debug subsystem)
-  * 16..31 = event with appropriate IRQ
-    (16=IRQ0, 31=IRQ15) (is reset after reading all IRQ data)
+  * KOS_EV_NONE (0):
+      No event.
+  * KOS_EV_REDRAW (1):
+      Redraw event (is reset by call to function 0).
+  * KOS_EV_KEY (2):
+      Key on keyboard is pressed (acts, only when the window is
+      active) or hotkey is pressed; is reset, when all keys from
+      the buffer are read out by function 2.
+  * KOS_EV_BUTTON (3):
+      Button is pressed, defined earlier by function 8 (or close
+      button, created implicitly by function 0; minimize button
+      is handled by the system and sends no message; acts, only when
+      the window is active; is reset when all buttons from the buffer
+      are read out by function 17).
+  * RESERVED (4):
+      Reserved (in current implementation never comes even after
+      unmasking by function 40).
+  * KOS_EV_BACKGROUND (5):
+      Kernel finished redrawing the desktop background
+  * KOS_EV_MOUSE (6):
+      Mouse event (something happened - button pressing or moving;
+      is reset at reading).
+  * KOS_EV_IPC (7):
+      IPC event (see function 60 - Inter Process Communication;
+      is reset at reading).
+  * KOS_EV_NETWORK (8):
+      Network event (is reset at reading).
+  * KOS_EV_DEBUG (9):
+      Debug event (is reset at reading).
+  * KOS_EV_IRQ_FIRST(16) .. KOS_EV_IRQ_LAST(31):
+      Event with appropriate IRQ. Is reset after reading all IRQ data
+      (16=IRQ0, 31=IRQ15).
 
 ======================================================================
 =================== KolibriOS-NG error codes =========================
