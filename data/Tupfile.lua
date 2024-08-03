@@ -12,7 +12,7 @@ PROGS = "../programs"
 -- Files to be included in kolibri.img.
 -- The first subitem of every item is name inside kolibri.img, the second is name of local file.
 img_files = {
- {"MACROS.INC", PROGS .. "/macros.inc"},
+ {"KOSAPI.INC", PROGS .. "/kosapi.inc"},
 -- {"CONFIG.INC", PROGS .. "/config.inc"},
  {"STRUCT.INC", PROGS .. "/struct.inc"},
  {"FB2READ", "common/fb2read"},
@@ -65,7 +65,6 @@ img_files = {
 
 -- For russian build, add russian-only files.
 if build_type == "rus" then tup.append_table(img_files, {
- {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/trunk/rus/example.asm"},
  {"DEVELOP/BACKY", PROGS .. "/develop/backy/Backy_ru"},
  {"GAMES/BASEKURS.KLA", build_type .. "/games/basekurs.kla"},
  {"File Managers/KFAR.INI", build_type .. "/File Managers/kfar.ini"},
@@ -74,35 +73,8 @@ if build_type == "rus" then tup.append_table(img_files, {
  {"SETTINGS/GAMES.INI", "rus/settings/games.ini"},
  {"SETTINGS/MYKEY.INI", PROGS .. "/system/MyKey/trunk/mykey.ini"},
  {"SETTINGS/SYSPANEL.INI", "rus/settings/syspanel.ini"},
-}) elseif build_type == "eng" then tup.append_table(img_files, {
- {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/trunk/example.asm"},
- {"DEVELOP/BACKY", PROGS .. "/develop/backy/Backy"},
- {"File Managers/KFAR.INI", "common/File Managers/kfar.ini"},
- {"GAMES/DESCENT", "common/games/descent"},
- {"SETTINGS/.shell", PROGS .. "/system/shell/bin/eng/.shell"},
- {"SETTINGS/GAMES.INI", "common/settings/games.ini"},
- {"SETTINGS/MYKEY.INI", PROGS .. "/system/MyKey/trunk/mykey.ini"},
- {"SETTINGS/SYSPANEL.INI", "common/settings/syspanel.ini"},
-}) elseif build_type == "sp" then tup.append_table(img_files, {
- {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/trunk/example.asm"},
- {"DEVELOP/BACKY", PROGS .. "/develop/backy/Backy"},
- {"File Managers/KFAR.INI", "common/File Managers/kfar.ini"},
- {"GAMES/DESCENT", "common/games/descent"},
- {"SETTINGS/.shell", PROGS .. "/system/shell/bin/eng/.shell"},
- {"SETTINGS/GAMES.INI", "common/settings/games.ini"},
- {"SETTINGS/MYKEY.INI", PROGS .. "/system/MyKey/trunk/mykey.ini"},
- {"SETTINGS/SYSPANEL.INI", "common/settings/syspanel.ini"},
-}) elseif build_type == "it" then tup.append_table(img_files, {
- {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/trunk/example.asm"},
- {"DEVELOP/BACKY", PROGS .. "/develop/backy/Backy"},
- {"File Managers/KFAR.INI", "common/File Managers/kfar.ini"},
- {"GAMES/DESCENT", "common/games/descent"},
- {"SETTINGS/.shell", PROGS .. "/system/shell/bin/eng/.shell"},
- {"SETTINGS/MYKEY.INI", PROGS .. "/system/MyKey/trunk/mykey_it.ini"},
- {"SETTINGS/GAMES.INI", "common/settings/games.ini"},
- {"SETTINGS/SYSPANEL.INI", "common/settings/syspanel.ini"},
 }) else tup.append_table(img_files, {
- {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/trunk/example.asm"},
+ {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/en_US/example.asm"},
  {"DEVELOP/BACKY", PROGS .. "/develop/backy/Backy"},
  {"File Managers/KFAR.INI", "common/File Managers/kfar.ini"},
  {"GAMES/DESCENT", "common/games/descent"},
@@ -606,6 +578,7 @@ tup.append_table(extra_files, {
 })
 -- For russian build, add russian-only programs.
 if build_type == "rus" then tup.append_table(img_files, {
+ {"EXAMPLE.ASM", PROGS .. "/develop/examples/example/ru_RU/example-cp866.asm"},
  {"PERIOD", PROGS .. "/other/period/trunk/period"},
  {"GAMES/KLAVISHA", PROGS .. "/games/klavisha/trunk/klavisha"},
  {"DEVELOP/EXAMPLES/TESTCON2", PROGS .. "/develop/libraries/console_coff/examples/testcon2_rus"},
