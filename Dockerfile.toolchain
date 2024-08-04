@@ -49,7 +49,9 @@ RUN \
     chmod go-w /usr/lib/x86_64-linux-gnu/libisl.so.10.2.2 && \
     cd /src && \
     wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/kos32-tcc -O /home/autobuild/tools/win32/bin/kos32-tcc && \
-    chmod +x /home/autobuild/tools/win32/bin/kos32-tcc
+    chmod +x /home/autobuild/tools/win32/bin/kos32-tcc \
+    wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/jwasm -O /home/autobuild/tools/win32/bin/jwasm \
+    chmod +x /home/autobuild/tools/win32/bin/jwasm
 
 # Compile parts of toolchain
 RUN \
