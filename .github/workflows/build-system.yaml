@@ -73,6 +73,10 @@ jobs:
           wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/kos32-tcc -O /home/autobuild/tools/win32/bin/kos32-tcc
           chmod +x /home/autobuild/tools/win32/bin/kos32-tcc
 
+          # Get jwasm
+          wget https://github.com/kolibrios-nextgen/kolibrios-nextgen/releases/download/v1.0/jwasm -O /home/autobuild/tools/win32/bin/jwasm
+          chmod +x /home/autobuild/tools/win32/bin/jwasm
+
       - name: Compile objconv
         run: |
           source ~/.bashrc
@@ -113,7 +117,6 @@ jobs:
           export ROOT=${{ github.workspace }}
           cd $ROOT
           echo "CONFIG_LANG=en"                                                           >> tup.config
-          echo "CONFIG_NO_JWASM=full"                                                     >> tup.config
           echo "CONFIG_NO_MSVC=full"                                                      >> tup.config
           echo "CONFIG_TOOLCHAIN_LIBPATH=/home/autobuild/tools/win32/mingw32/lib"         >> tup.config
           echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"'                                  >> tup.config
@@ -155,7 +158,6 @@ jobs:
           export ROOT=${{ github.workspace }}
           cd $ROOT
           echo "CONFIG_LANG=ru"                                                            > tup.config
-          echo "CONFIG_NO_JWASM=full"                                                     >> tup.config
           echo "CONFIG_NO_MSVC=full"                                                      >> tup.config
           echo "CONFIG_TOOLCHAIN_LIBPATH=/home/autobuild/tools/win32/mingw32/lib"         >> tup.config
           echo 'CONFIG_KPACK_CMD=&& kpack --nologo "%o"'                                  >> tup.config
