@@ -9,7 +9,7 @@
 SYSTEM FUNCTIONS of KolibriOS-NG
 
 All constants and structures mentioned in this document are 
-available in file "kosapi.inc".
+available in the "kosapi.inc" file.
 
 Number of the function is located in the register eax.
 The call of the system function is executed by "int 0x40" command.
