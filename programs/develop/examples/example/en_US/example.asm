@@ -132,7 +132,7 @@ draw_window:
  
 ;------------------------------ Initialized data -----------------------------;
 
-; Data can be freely mixed with code to any parts of the image.
+; Data can be freely mixed with code in any part of the image.
 ; Only the header information is required at the beginning of the image.
  
 text    db  "It looks like you have just compiled    "
