@@ -2,7 +2,7 @@
 ; SPDX-FileCopyrightText: 2006-2021 KolibriOS Team
 ; SPDX-FileCopyrightText: 2024 KolibriOS-NG Team
 
-; The simple application example for KolibriOS-NG.
+; A simple application example for KolibriOS-NG.
 ; Compile with FASM:
 ;   You can open example.asm through the FASM program (its shortcut is
 ;   on the desktop). Or you can just press F9 in Tinypad or CEdit.
