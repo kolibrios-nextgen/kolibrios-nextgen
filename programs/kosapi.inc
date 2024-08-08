@@ -4,7 +4,7 @@
 ; This file contains the constants required for the KolibriOS-NG API.
 
 ; System calls:
-; SF_ and SSF_ and SSSF_ constant prefix are reserved for system functions,
+; SF_ and SSF_ and SSSF_ constant prefixes are reserved for system functions,
 ; subfunctions, and subsubfunctions.
 
 ; Сonstants:
