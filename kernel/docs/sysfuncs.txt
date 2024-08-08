@@ -5353,7 +5353,7 @@ Codes of events:
       Reserved (in current implementation never comes even after
       unmasking by function 40).
   * KOS_EV_BACKGROUND (5):
-      Kernel finished redrawing of the desktop background
+      Kernel finished redrawing the desktop background
   * KOS_EV_MOUSE (6):
       Mouse event (something happened - button pressing or moving;
       is reset at reading).
