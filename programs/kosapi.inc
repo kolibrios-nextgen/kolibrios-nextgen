@@ -13,7 +13,7 @@
 
 ; Structures:
 ; The structure name must be in uppercase and contain the KOS_ prefix
-; and the postfix _S. For example: KOS_THREAD_INFO_S.
+; as well as the _S postfix. For example: KOS_THREAD_INFO_S.
 
 ;----------------- System functions -----------------;
 
