@@ -17,7 +17,8 @@ iglobal
 align 4
 ext_user_functions:
         dd      ext_free
-        dd      (ext_user_functions_end - ext_user_functions - 4) / 4
+        dd      (ext_user_functions_end - .first) / 4
+.first:
         dd      ext_ReadFile
         dd      ext_ReadFolder
         dd      ext_CreateFile

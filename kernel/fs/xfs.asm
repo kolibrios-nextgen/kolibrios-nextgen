@@ -78,7 +78,8 @@ iglobal
 align 4
 xfs._.user_functions:
         dd      xfs._.free
-        dd      (xfs._.user_functions_end-xfs._.user_functions-4)/4
+        dd      (xfs._.user_functions_end-xfs._.user_functions_first)/4
+xfs._.user_functions_first:
         dd      xfs_Read
         dd      xfs_ReadFolder
         dd      0;xfs_Rewrite
